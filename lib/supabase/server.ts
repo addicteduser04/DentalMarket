@@ -1,10 +1,21 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { cookies } from "next/headers";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-export const hasSupabaseEnv = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && supabaseKey);
+export const hasSupabaseEnv = Boolean(supabaseUrl && supabaseKey);
+function getSupabaseConfig() {
+  if (!supabaseUrl) {
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL. Set it to your Supabase project URL.");
+  }
+  if (!supabaseKey) {
+    throw new Error("Missing Supabase anon key. Set NEXT_PUBLIC_SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY).");
+  }
+  return { url: supabaseUrl, key: supabaseKey };
+}
 export function createClient() {
   const store = cookies();
-  return createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL || "https://example.supabase.co", supabaseKey || "demo-anon-key", {
+  const { url, key } = getSupabaseConfig();
+  return createServerClient(url, key, {
     cookies: { getAll: () => store.getAll(), setAll: (values: { name: string; value: string; options: CookieOptions }[]) => { try { values.forEach(({name,value,options}) => store.set(name,value,options)); } catch {} } }
   });
 }
