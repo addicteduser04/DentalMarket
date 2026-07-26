@@ -1,0 +1,4 @@
+import { notFound } from "next/navigation";
+import { ProductCard } from "@/components/storefront/product-card";
+import { getCatalog } from "@/lib/data";
+export default async function CategoryPage({params}:{params:{slug:string}}){const {products,categories,offers}=await getCatalog();const category=categories.find(c=>c.slug===params.slug);if(!category)notFound();const filtered=products.filter(p=>p.category_id===category.id);return <div className="container-shell py-14"><p className="eyebrow">Catalogue</p><h1 className="display mt-3 text-5xl">{category.name}</h1><p className="mt-3 text-sm text-ink/50">{filtered.length} produit{filtered.length!==1?"s":""} disponible{filtered.length!==1?"s":""}</p><div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{filtered.map(p=><ProductCard key={p.id} product={p} offers={offers}/>)}</div></div>}

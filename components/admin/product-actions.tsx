@@ -1,0 +1,4 @@
+"use client";
+import { useRouter } from "next/navigation";
+import { createClient, hasSupabaseEnv } from "@/lib/supabase/client";
+export function ProductActions({id,active}:{id:string;active:boolean}){const router=useRouter();async function update(value:boolean){if(!hasSupabaseEnv)return;await createClient().from("products").update({is_active:value}).eq("id",id);router.refresh()}async function del(){if(!hasSupabaseEnv||!confirm("Supprimer ce produit ?"))return;await createClient().from("products").delete().eq("id",id);router.refresh()}return <div className="flex items-center gap-2"><button onClick={()=>update(!active)} className={`rounded-full px-3 py-1 text-xs font-bold ${active?"bg-mint text-sage":"bg-ink/10"}`}>{active?"Actif":"Masqué"}</button><button onClick={del} className="text-xs font-bold text-coral">Supprimer</button></div>}

@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin:0; background:#f6f4ed; color:#17211d; font-family:Arial, Helvetica, sans-serif; }
+::selection { background:#d9eee3; }
+.container-shell { width:min(1180px, calc(100% - 32px)); margin-inline:auto; }
+.eyebrow { font-size:.72rem; font-weight:800; letter-spacing:.17em; text-transform:uppercase; color:#47705d; }
+.display { font-family:Georgia, "Times New Roman", serif; letter-spacing:-.035em; }
+.card { border:1px solid rgba(23,33,29,.12); border-radius:1.25rem; background:rgba(255,255,255,.68); box-shadow:0 8px 32px rgba(23,33,29,.05); }
+.button { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; min-height:46px; padding:.7rem 1.1rem; border-radius:999px; background:#17211d; color:white; font-weight:700; transition:.2s; }
+.button:hover { background:#47705d; transform:translateY(-1px); }
+.button.secondary { background:transparent; color:#17211d; border:1px solid rgba(23,33,29,.22); }
+.field { width:100%; border:1px solid rgba(23,33,29,.16); border-radius:.8rem; background:white; padding:.8rem .9rem; outline:none; }
+.field:focus { border-color:#47705d; box-shadow:0 0 0 3px #d9eee3; }
