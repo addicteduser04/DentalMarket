@@ -1,4 +1,4 @@
-# Dental Marketplace — Build Plan
+# DENTALNOVA — Build Plan
 
 ## Stack
 - **Next.js 14** (App Router, TypeScript)
@@ -147,7 +147,7 @@ type CartItem = {
   price: number;
 };
 
-const WHATSAPP_NUMBER = "2127XXXXXXXX"; // no + or spaces
+const WHATSAPP_NUMBER = "212659547879"; // canonical digits, no + or spaces
 
 export function buildWhatsAppMessage(items: CartItem[], customerName?: string) {
   const lines = items.map(
@@ -159,10 +159,12 @@ export function buildWhatsAppMessage(items: CartItem[], customerName?: string) {
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   const message = [
-    "Bonjour, je souhaite commander :",
+    "Bonjour DENTALNOVA, je souhaite commander :",
     ...lines,
     `Total estimé : ${total.toFixed(2)} MAD`,
     customerName ? `Client : ${customerName}` : "",
+    "Ville de livraison : Casablanca",
+    "La livraison est actuellement disponible exclusivement à Casablanca.",
   ]
     .filter(Boolean)
     .join("\n");
@@ -177,11 +179,10 @@ export function redirectToWhatsApp(items: CartItem[], customerName?: string) {
 }
 ```
 
-Call `redirectToWhatsApp(cartItems, user?.full_name)` from the "Confirmer"
-button on `/cart`. Optionally, right before redirecting, fire an insert into
-`cart_submissions` (fire-and-forget, don't block the redirect on it) so you
-can see conversion/popular products later without building a real order
-system.
+The `/cart` confirmation first validates the Casablanca-only delivery rule
+through `/api/cart-submissions`, records the analytics submission, and only
+then starts the WhatsApp handoff. Errors remain visible and the cart is not
+cleared before the handoff is ready.
 
 ---
 
