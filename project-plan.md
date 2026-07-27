@@ -1,4 +1,4 @@
-# DENTALNOVA — Build Plan
+# DENTANOVA — Build Plan
 
 ## Stack
 - **Next.js 14** (App Router, TypeScript)
@@ -159,7 +159,7 @@ export function buildWhatsAppMessage(items: CartItem[], customerName?: string) {
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   const message = [
-    "Bonjour DENTALNOVA, je souhaite commander :",
+    "Bonjour DENTANOVA, je souhaite commander :",
     ...lines,
     `Total estimé : ${total.toFixed(2)} MAD`,
     customerName ? `Client : ${customerName}` : "",

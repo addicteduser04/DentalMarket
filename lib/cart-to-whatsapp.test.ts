@@ -16,9 +16,9 @@ describe("buildWhatsAppMessage", () => {
   });
 
   it("uses the canonical destination and URL-encodes the message", () => {
-    const url = createWhatsAppUrl("Bonjour DENTALNOVA\nCasablanca & matériel");
+    const url = createWhatsAppUrl("Bonjour DENTANOVA\nCasablanca & matériel");
     expect(BUSINESS_WHATSAPP_DIGITS).toBe("212659547879");
-    expect(url).toBe("https://wa.me/212659547879?text=Bonjour%20DENTALNOVA%0ACasablanca%20%26%20mat%C3%A9riel");
+    expect(url).toBe("https://wa.me/212659547879?text=Bonjour%20DENTANOVA%0ACasablanca%20%26%20mat%C3%A9riel");
     expect(normalizeWhatsAppDigits("+212 659 547 879")).toBe(BUSINESS_WHATSAPP_DIGITS);
   });
 });

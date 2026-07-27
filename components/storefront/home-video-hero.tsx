@@ -3,7 +3,7 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const poster = "/video/dentalnova-homepage-poster.webp";
+const poster = "/video/dentanova-homepage-poster.webp";
 
 export function HomeVideoHero() {
   const [reducedMotion, setReducedMotion] = useState<boolean | null>(null);
@@ -34,14 +34,14 @@ export function HomeVideoHero() {
           poster={poster}
           aria-hidden="true"
         >
-          <source src="/video/dentalnova-homepage.mp4" type="video/mp4" />
+          <source src="/video/dentanova-homepage.mp4" type="video/mp4" />
         </video>
       )}
       <div className="homepage-video-overlay absolute inset-0" aria-hidden="true"/>
       <div className="container-shell relative z-10 flex min-h-[100svh] items-center justify-center px-1 pt-20">
         <form action="/search" method="get" role="search" className="homepage-hero-search">
           <Search aria-hidden="true" size={23}/>
-          <label htmlFor="homepage-search" className="sr-only">Rechercher dans le catalogue DENTALNOVA</label>
+          <label htmlFor="homepage-search" className="sr-only">Rechercher dans le catalogue DENTANOVA</label>
           <input
             id="homepage-search"
             name="q"

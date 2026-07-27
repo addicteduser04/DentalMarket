@@ -16,8 +16,8 @@ export function BrandLogo({
     <span className="inline-flex items-center gap-3">
       {!failed && (
         <Image
-          src="/branding/dentalnova-logo.jpeg"
-          alt="DENTALNOVA"
+          src="/branding/dentanova-logo.svg"
+          alt="DENTANOVA"
           width={compact ? 44 : 56}
           height={compact ? 44 : 56}
           className={`${compact ? "h-11 w-11" : "h-14 w-14"} rounded-full object-contain`}
@@ -26,7 +26,7 @@ export function BrandLogo({
         />
       )}
       <span className="text-white">
-        <b className="display block text-xl tracking-tight">DENTALNOVA</b>
+        <b className="display block text-xl tracking-tight">DENTANOVA</b>
         <small className="block text-[9px] font-bold uppercase tracking-[.2em] text-cyan-300">
           Casablanca
         </small>

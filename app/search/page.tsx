@@ -27,7 +27,7 @@ export default async function SearchPage({searchParams}:{searchParams:{q?:string
         {foundCategories.map(category=><Link key={category.id} href={`/category/${category.slug}`} className="rounded-full border border-white/10 bg-white/[.05] px-4 py-2 text-sm font-bold transition hover:border-cyan-300/40 hover:text-cyan-300">{category.name}</Link>)}
       </div>
     </div>}
-    {!products.length ? <div className="mt-10"><EmptyState title="Notre catalogue arrive bientôt" text="La sélection DENTALNOVA est en cours de préparation."/></div> : <>
+    {!products.length ? <div className="mt-10"><EmptyState title="Notre catalogue arrive bientôt" text="La sélection DENTANOVA est en cours de préparation."/></div> : <>
       <p className="mt-8 text-sm text-white/50">{found.length} résultat{found.length!==1?"s":""}{query&&<> pour « {query} »</>}</p>
       <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{found.map(product=><ProductCard key={product.id} product={product} offers={offers}/>)}</div>
     </>}

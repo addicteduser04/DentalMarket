@@ -10,7 +10,7 @@ export function Header() {
   const home = usePathname() === "/";
   return <header className={`z-50 w-full border-b border-white/10 text-white backdrop-blur-xl transition-colors ${home ? "absolute left-0 top-0 bg-[#05090d]/25" : "sticky top-0 bg-[#070c11]/90"}`}>
     <div className="container-shell flex h-20 items-center justify-between">
-      <Link href="/" aria-label="DENTALNOVA — Accueil"><BrandLogo compact inverted/></Link>
+      <Link href="/" aria-label="DENTANOVA — Accueil"><BrandLogo compact inverted/></Link>
       <nav className="hidden items-center gap-7 text-sm font-semibold md:flex"><Link href="/">Accueil</Link><Link href="/search">Catalogue</Link><Link href="/search">Recherche</Link><Link href="/account">Mon compte</Link></nav>
       <div className="flex items-center gap-2">
         <Link aria-label="Rechercher" href="/search" className="grid h-10 w-10 place-items-center rounded-full hover:bg-white/10"><Search size={19}/></Link>

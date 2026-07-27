@@ -28,9 +28,9 @@ export default async function Home() {
         <p className="mt-8 text-xs font-extrabold uppercase tracking-[.25em] text-cyan-300">{available ? "Sélection en préparation" : "Service temporairement indisponible"}</p>
         <h2 className="mt-4 text-4xl font-black uppercase tracking-[-.055em] md:text-6xl">Notre catalogue<br/>arrive bientôt</h2>
         <p className="mx-auto mt-6 max-w-lg leading-7 text-white/58">
-          La sélection DENTALNOVA est en cours de préparation. Contactez-nous sur WhatsApp pour toute demande de matériel dentaire.
+          La sélection DENTANOVA est en cours de préparation. Contactez-nous sur WhatsApp pour toute demande de matériel dentaire.
         </p>
-        <a href={createWhatsAppUrl("Bonjour DENTALNOVA, je souhaite obtenir des informations sur votre matériel dentaire à Casablanca.")} className="hero-primary-cta mt-9">
+        <a href={createWhatsAppUrl("Bonjour DENTANOVA, je souhaite obtenir des informations sur votre matériel dentaire à Casablanca.")} className="hero-primary-cta mt-9">
           Nous contacter sur WhatsApp
         </a>
       </div> : <>

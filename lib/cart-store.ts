@@ -9,4 +9,4 @@ export const useCart = create<CartState>()(persist((set) => ({
   remove: key => set(s=>({items:s.items.filter(x=>x.key!==key)})),
   setQuantity: (key,quantity) => set(s=>({items:s.items.map(x=>x.key===key?{...x,quantity:Math.max(1,quantity)}:x)})),
   clear:()=>set({items:[]})
-}), {name:"dentalmarket-cart"}));
+}), {name:"dentanova-cart"}));

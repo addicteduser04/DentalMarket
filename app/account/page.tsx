@@ -7,13 +7,13 @@ import { getAccountSession } from "@/lib/account-server";
 
 export default async function AccountPage(){
   const {db,user,profile,isAdmin}=await getAccountSession();
-  if(!user||!db)return <div className="account-center min-h-[calc(100vh-5rem)]"><div className="container-shell grid gap-10 py-16 lg:grid-cols-2 lg:items-center"><div><BrandLogo inverted/><p className="mt-8 text-xs font-extrabold uppercase tracking-[.22em] text-cyan-300">Espace personnel sécurisé</p><h1 className="mt-3 max-w-lg text-5xl font-black tracking-[-.05em] text-white md:text-6xl">Votre pratique, organisée.</h1><p className="mt-5 max-w-md leading-7 text-white/55">Retrouvez vos favoris, demandes et informations de livraison DENTALNOVA.</p></div><AuthForm/></div></div>;
+  if(!user||!db)return <div className="account-center min-h-[calc(100vh-5rem)]"><div className="container-shell grid gap-10 py-16 lg:grid-cols-2 lg:items-center"><div><BrandLogo inverted/><p className="mt-8 text-xs font-extrabold uppercase tracking-[.22em] text-cyan-300">Espace personnel sécurisé</p><h1 className="mt-3 max-w-lg text-5xl font-black tracking-[-.05em] text-white md:text-6xl">Votre pratique, organisée.</h1><p className="mt-5 max-w-md leading-7 text-white/55">Retrouvez vos favoris, demandes et informations de livraison DENTANOVA.</p></div><AuthForm/></div></div>;
   const [{count:favorites},{data:requests},{data:address}]=await Promise.all([
     db.from("favorites").select("*",{count:"exact",head:true}),
     db.from("cart_submissions").select("id,status,created_at,estimated_total").order("created_at",{ascending:false}).limit(3),
     db.from("delivery_addresses").select("district,address_line").eq("is_default",true).maybeSingle(),
   ]);
-  const name=profile?.display_name||profile?.full_name||user.email?.split("@")[0]||"Compte DENTALNOVA";
+  const name=profile?.display_name||profile?.full_name||user.email?.split("@")[0]||"Compte DENTANOVA";
   const initials=name.split(/\s+/).slice(0,2).map((part:string)=>part[0]).join("").toUpperCase();
   return <AccountShell isAdmin={isAdmin} title="Vue d’ensemble">
     <section className="account-panel flex flex-col gap-6 p-6 md:flex-row md:items-center">

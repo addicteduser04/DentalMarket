@@ -7,7 +7,7 @@ import { money } from "@/lib/utils";
 import { FavoriteButton } from "./favorite-button";
 export function ProductCard({product,offers}:{product:Product;offers:Offer[]}){const offer=bestOffer(product,offers), price=priceWithOffer(Number(product.price),offer);return <article className="group relative overflow-hidden rounded-[1.25rem] border border-white/10 bg-[#0d151d] shadow-[0_18px_45px_rgba(0,0,0,.2)] transition duration-200 hover:-translate-y-1 hover:border-cyan-300/25">
   <Link href={`/product/${product.slug}`}>
-    <div className="relative aspect-[4/3] overflow-hidden bg-white/[.04]">{product.images?.[0]?<Image fill src={product.images[0]} alt={product.name} className="object-cover transition duration-500 group-hover:scale-105"/>:<div className="grid h-full place-items-center text-cyan-300/50">DENTALNOVA</div>}
+    <div className="relative aspect-[4/3] overflow-hidden bg-white/[.04]">{product.images?.[0]?<Image fill src={product.images[0]} alt={product.name} className="object-cover transition duration-500 group-hover:scale-105"/>:<div className="grid h-full place-items-center text-cyan-300/50">DENTANOVA</div>}
       {offer&&<span className="absolute left-3 top-3 rounded-full bg-cyan-400 px-3 py-1 text-xs font-bold text-[#061017]">{offer.badge_text||"Offre"}</span>}
       <span className="absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-[#091018]/90 text-white shadow-md transition group-hover:bg-cyan-300 group-hover:text-[#061017]"><ArrowUpRight size={17}/></span>
     </div>

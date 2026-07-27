@@ -7,14 +7,14 @@ import { Footer } from "@/components/storefront/footer";
 import { CampaignCapture } from "@/components/storefront/campaign-capture";
 export const metadata:Metadata={
   metadataBase:new URL("https://dental-market-bay.vercel.app"),
-  title:{default:"DENTALNOVA | Matériel dentaire professionnel à Casablanca",template:"%s · DENTALNOVA"},
-  description:"DENTALNOVA fournit du matériel dentaire professionnel avec livraison exclusivement à Casablanca.",
+  title:{default:"DENTANOVA | Matériel dentaire professionnel à Casablanca",template:"%s · DENTANOVA"},
+  description:"DENTANOVA fournit du matériel dentaire professionnel avec livraison exclusivement à Casablanca.",
   openGraph:{
-    title:"DENTALNOVA | Matériel dentaire professionnel à Casablanca",
+    title:"DENTANOVA | Matériel dentaire professionnel à Casablanca",
     description:"Une sélection professionnelle de matériel dentaire, disponible à Casablanca.",
     type:"website",
     locale:"fr_MA",
-    images:[{url:"/opengraph-image.png",width:1200,height:630,alt:"DENTALNOVA"}],
+    images:[{url:"/opengraph-image.png",width:1200,height:630,alt:"DENTANOVA"}],
   },
 };
 export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="fr"><body><Suspense><CampaignCapture/></Suspense><Header/><main className="min-h-[70vh]">{children}</main><Footer/><Analytics/></body></html>}

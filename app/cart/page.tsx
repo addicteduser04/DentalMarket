@@ -80,7 +80,7 @@ export default function CartPage() {
         <h2 className="display text-2xl">Récapitulatif</h2>
         <div className="status-success mt-5 rounded-xl p-4 text-sm leading-6">
           <b>Livraison à Casablanca uniquement</b>
-          <p className="mt-1 text-white/60">DENTALNOVA livre actuellement exclusivement à Casablanca.</p>
+          <p className="mt-1 text-white/60">DENTANOVA livre actuellement exclusivement à Casablanca.</p>
         </div>
         <div className="mt-6 grid gap-3 border-b border-ink/10 pb-5 text-sm">
           <div className="flex justify-between"><span className="text-white/55">Articles</span><span>{items.reduce((sum,item) => sum+item.quantity,0)}</span></div>

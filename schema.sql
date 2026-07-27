@@ -1,5 +1,5 @@
 -- ============================================================
--- DENTALNOVA — deprecated Supabase schema snapshot
+-- DENTANOVA — deprecated Supabase schema snapshot
 -- DEPRECATED REFERENCE ONLY. DO NOT RUN THIS FILE.
 -- Use the versioned files in supabase/migrations instead. This snapshot predates
 -- the non-recursive administrator-policy correction.

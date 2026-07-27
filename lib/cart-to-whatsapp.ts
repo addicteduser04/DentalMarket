@@ -5,7 +5,7 @@ export function buildWhatsAppMessage(items: WhatsAppItem[], customerName?: strin
   const lines = items.map(i => `- ${i.name}${i.variationLabel ? ` (${i.variationLabel})` : ""} x${i.quantity} — ${(i.price * i.quantity).toFixed(2)} MAD`);
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   return [
-    "Bonjour DENTALNOVA, je souhaite commander :",
+    "Bonjour DENTANOVA, je souhaite commander :",
     ...lines,
     `Total estimé : ${total.toFixed(2)} MAD`,
     customerName ? `Client : ${customerName}` : "",
