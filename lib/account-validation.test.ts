@@ -33,7 +33,7 @@ describe("secure account changes", () => {
 
   it("requires a strong password", () => {
     expect(passwordStrength("short").valid).toBe(false);
-    expect(passwordStrength("Dentanova!2026").valid).toBe(true);
+    expect(passwordStrength("DENTALNOVA!2026").valid).toBe(true);
   });
 });
 
