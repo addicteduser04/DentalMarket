@@ -1,2 +1,2 @@
-import { notFound } from "next/navigation";import { ProductForm } from "@/components/admin/product-form";import { getCatalog } from "@/lib/data";
-export default async function EditProduct({params}:{params:{id:string}}){const {products,categories}=await getCatalog(),product=products.find(p=>p.id===params.id);if(!product)notFound();return <><p className="eyebrow">Catalogue</p><h1 className="display mt-2 text-4xl">Modifier le produit</h1><ProductForm categories={categories} product={product}/></>}
+import { redirect } from "next/navigation";
+export default function LegacyEditProduct({params}:{params:{id:string}}){redirect(`/admin/products/${params.id}`)}

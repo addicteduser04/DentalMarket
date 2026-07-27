@@ -1,0 +1,11 @@
+import { describe,expect,it } from "vitest";
+import { publicationReadiness,validateProduct,validateProductImage,type ProductDraft } from "./product-validation";
+const valid:ProductDraft={name:"Miroir dentaire",sku:"DN-001",slug:"miroir-dentaire",category_id:"category",price:120,price_mode:"fixed",promotional_price:null,promotion_starts_at:"",promotion_ends_at:"",stock_tracking:true,stock_quantity:5,low_stock_threshold:2,availability_status:"in_stock",publication_status:"draft",images:[{url:"image.webp",alt:"Miroir dentaire",is_main:true}],variations:[]};
+describe("product profile validation",()=>{
+  it("accepts a valid draft and published product",()=>{expect(validateProduct(valid).valid).toBe(true);expect(validateProduct({...valid,publication_status:"published"}).valid).toBe(true)});
+  it("rejects invalid prices and promotion ranges",()=>{expect(validateProduct({...valid,price:-1}).errors.price).toBeTruthy();expect(validateProduct({...valid,promotional_price:140}).errors.promotional_price).toBeTruthy();expect(validateProduct({...valid,promotional_price:80,promotion_starts_at:"2026-08-02",promotion_ends_at:"2026-08-01"}).errors.promotion_ends_at).toBeTruthy()});
+  it("rejects negative stock",()=>{expect(validateProduct({...valid,stock_quantity:-1}).errors.stock_quantity).toBeTruthy()});
+  it("detects duplicate variation attributes",()=>{const variation={label:"M",price:120,attributes:{size:"M"},is_active:true};expect(validateProduct({...valid,variations:[variation,{...variation,label:"M copie"}]}).errors.variations).toBeTruthy()});
+  it("enforces publication readiness while allowing an image placeholder",()=>{const draft={...valid,category_id:"",images:[],availability_status:"unavailable",publication_status:"published" as const};const result=validateProduct(draft);expect(result.errors.category_id).toBeTruthy();expect(result.errors.images).toBeUndefined();expect(result.errors.availability_status).toBeTruthy();expect(publicationReadiness(draft).some(([label,ready])=>label==="Image principale"&&!ready)).toBe(true)});
+  it("validates product image type and size",()=>{expect(validateProductImage({type:"image/webp",size:1000})).toBeNull();expect(validateProductImage({type:"image/svg+xml",size:1000})).toBeTruthy();expect(validateProductImage({type:"image/png",size:6*1024*1024})).toBeTruthy()});
+});
