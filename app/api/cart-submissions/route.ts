@@ -36,6 +36,8 @@ export async function POST(request: Request) {
     items,
     estimated_total: estimatedTotal,
     campaign_slug: typeof body?.campaignSlug === "string" ? body.campaignSlug : null,
+    status: "whatsapp_handoff",
+    delivery_city: DELIVERY_CITY,
   });
 
   if (error) {

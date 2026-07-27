@@ -1,0 +1,3 @@
+"use client";
+import { AlertTriangle, RotateCcw } from "lucide-react";
+export default function AccountError({reset}:{reset:()=>void}){return <div className="account-center grid min-h-[70vh] place-items-center px-4"><div className="account-panel max-w-lg p-8 text-center"><AlertTriangle className="mx-auto text-amber-300"/><h1 className="mt-4 text-2xl font-black">Impossible de charger votre compte</h1><p className="mt-3 text-sm leading-6 text-white/50">Vos données n’ont pas été modifiées. Réessayez dans un instant.</p><button onClick={reset} className="account-button mt-6"><RotateCcw size={16}/>Réessayer</button></div></div>}
