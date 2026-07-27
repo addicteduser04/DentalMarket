@@ -67,7 +67,7 @@ export default async function Home() {
     </section>
     {campaign && <section className="bg-[#070c11] pb-20">
       <div className="container-shell">
-        <Link href={campaign.banner_link || "/"} className="group flex flex-col justify-between gap-6 overflow-hidden rounded-[1.5rem] bg-coral px-7 py-7 text-white sm:flex-row sm:items-center">
+        <Link href={campaign.banner_link || "/"} className="group flex flex-col justify-between gap-6 overflow-hidden rounded-[1.25rem] border border-cyan-300/20 bg-gradient-to-r from-cyan-500/15 to-blue-600/15 px-7 py-7 text-white sm:flex-row sm:items-center">
           <div><p className="text-xs font-bold uppercase tracking-[.16em]">Offre du moment</p><h2 className="display mt-2 text-3xl">{campaign.name}</h2></div>
           <span className="flex items-center gap-2 font-bold">En profiter <ArrowRight className="transition group-hover:translate-x-1"/></span>
         </Link>

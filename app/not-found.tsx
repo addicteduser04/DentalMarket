@@ -1,0 +1,3 @@
+import Link from "next/link";
+import { SearchX } from "lucide-react";
+export default function NotFound(){return <div className="store-page grid min-h-[70vh] place-items-center px-4"><div className="card max-w-xl p-10 text-center"><SearchX className="mx-auto text-cyan-300"/><p className="eyebrow mt-6">Erreur 404</p><h1 className="display mt-3 text-4xl">Cette page est introuvable</h1><p className="mt-4 text-sm leading-6 text-white/50">Le contenu demandé n’existe plus ou son adresse a changé.</p><div className="mt-7 flex flex-wrap justify-center gap-3"><Link href="/" className="button">Retour à l’accueil</Link><Link href="/search" className="button secondary">Voir le catalogue</Link></div></div></div>}

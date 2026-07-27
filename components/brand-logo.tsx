@@ -25,9 +25,9 @@ export function BrandLogo({
           priority
         />
       )}
-      <span className={inverted ? "text-white" : "text-ink"}>
+      <span className="text-white">
         <b className="display block text-xl tracking-tight">DENTALNOVA</b>
-        <small className={`block text-[9px] font-bold uppercase tracking-[.2em] ${inverted ? "text-mint" : "text-sage"}`}>
+        <small className="block text-[9px] font-bold uppercase tracking-[.2em] text-cyan-300">
           Casablanca
         </small>
       </span>

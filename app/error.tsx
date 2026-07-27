@@ -1,0 +1,3 @@
+"use client";
+import { AlertTriangle, RotateCcw } from "lucide-react";
+export default function GlobalError({reset}:{reset:()=>void}){return <div className="store-page grid min-h-[70vh] place-items-center px-4"><div className="card max-w-lg p-9 text-center"><AlertTriangle className="mx-auto text-amber-300"/><h1 className="display mt-5 text-3xl">Une erreur est survenue</h1><p className="mt-3 text-sm leading-6 text-white/50">Aucune donnée n’a été modifiée. Vous pouvez réessayer en toute sécurité.</p><button onClick={reset} className="button mt-6"><RotateCcw size={16}/>Réessayer</button></div></div>}
