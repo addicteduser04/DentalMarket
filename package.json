@@ -10,7 +10,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "catalogue:dry-run": "node scripts/catalogue-import.mjs",
+    "catalogue:import": "node scripts/catalogue-import.mjs --apply"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.1",

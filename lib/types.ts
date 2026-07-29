@@ -1,7 +1,8 @@
 export type Variation = {
   id?: string; label: string; sku?: string; attributes?: Record<string,string>;
   price: number; stock_quantity?: number; availability?: "in_stock"|"out_of_stock"|"on_order";
-  is_active?: boolean; image_url?: string;
+  is_active?: boolean; image_url?: string; regular_price?:number; sale_price?:number|null;
+  source_id?:string; description?:string; min_quantity?:number;
 };
 export type ProductImage = { url:string; alt:string; is_main:boolean };
 export type Category = { id: string; name: string; slug: string; parent_id?: string | null; display_order?: number };
@@ -22,6 +23,7 @@ export type Product = {
   catalog_visible?:boolean; published_at?:string|null; delivery_eligible?:boolean;
   delivery_note?:string|null; pickup_available?:boolean; seo_title?:string|null;
   meta_description?:string|null; og_image_url?:string|null; created_at?:string; updated_at?:string;
+  import_source?:string|null; import_key?:string|null; source_metadata?:Record<string,unknown>;
 };
 export type Offer = {
   id: string; name: string; badge_text: string | null; discount_type: "percentage" | "fixed";
