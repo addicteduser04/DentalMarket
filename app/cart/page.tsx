@@ -31,7 +31,9 @@ export default function CartPage() {
           deliveryCity: DELIVERY_CITY,
           campaignSlug: localStorage.getItem("active_campaign_slug"),
           items: items.map(item => ({
-            product_id: item.productId,
+            item_type:item.itemType,
+            product_id:item.productId,
+            pack_id:item.packId,
             name: item.name,
             variation_label: item.variationLabel,
             qty: item.quantity,
@@ -42,7 +44,7 @@ export default function CartPage() {
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Impossible de préparer la demande.");
 
-      const destination = createWhatsAppUrl(buildWhatsAppMessage(items));
+      const destination = createWhatsAppUrl(buildWhatsAppMessage(result.items));
       clear();
       window.location.assign(destination);
     } catch (caught) {
@@ -63,7 +65,7 @@ export default function CartPage() {
         {items.map(item => <div key={item.key} className="card flex items-center gap-4 p-4">
           {item.image && <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-white/[.05]"><Image src={item.image} fill alt="" className="object-cover"/></div>}
           <div className="min-w-0 flex-1">
-            <Link href={`/product/${item.slug}`} className="font-bold">{item.name}</Link>
+            <Link href={item.itemType==="student_pack"?`/student-packs/${item.universitySlug||"pack"}/${item.slug}`:`/product/${item.slug}`} className="font-bold">{item.name}</Link>
             {item.variationLabel && <p className="mt-1 text-xs text-white/45">{item.variationLabel}</p>}
             <p className="mt-2 text-sm font-bold text-cyan-300">{money(item.price)}</p>
           </div>

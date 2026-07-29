@@ -13,7 +13,9 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "catalogue:dry-run": "node scripts/catalogue-import.mjs",
-    "catalogue:import": "node scripts/catalogue-import.mjs --apply"
+    "catalogue:import": "node scripts/catalogue-import.mjs --apply",
+    "student-packs:dry-run": "node scripts/student-packs-import.mjs",
+    "student-packs:import": "node scripts/student-packs-import.mjs --apply"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.1",

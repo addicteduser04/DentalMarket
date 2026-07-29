@@ -1,0 +1,23 @@
+import type {Metadata} from "next";
+import Image from "next/image";
+import Link from "next/link";
+import {notFound} from "next/navigation";
+import {getStudentPack} from "@/lib/student-pack-data";
+import {activePackPrice,packAvailability,packSavings} from "@/lib/student-packs";
+import {money} from "@/lib/utils";
+import {PackAddToCart} from "@/components/storefront/pack-add-to-cart";
+import {PackFavoriteButton} from "@/components/storefront/pack-favorite-button";
+import {getLocale} from "@/lib/i18n-server";
+import {translate} from "@/lib/i18n";
+export async function generateMetadata({params}:{params:{pack:string}}):Promise<Metadata>{const p=await getStudentPack(params.pack);return {title:p?.name||"Pack étudiant",description:p?.short_description||"Pack étudiant DENTANOVA"};}
+export default async function PackPage({params}:{params:{university:string;pack:string}}){
+  const pack=await getStudentPack(params.pack),locale=getLocale(),t=(key:Parameters<typeof translate>[1])=>translate(locale,key);if(!pack||pack.universities?.slug!==params.university)notFound();
+  const components=(pack.student_pack_components||[]).sort((a,b)=>a.display_order-b.display_order),price=activePackPrice(pack),savings=packSavings(pack),availability=packAvailability(pack);
+  return <div className="store-page"><div className="container-shell py-12"><nav className="text-sm text-white/45"><Link href="/student-packs">{t("studentPacks")}</Link> / <Link href={`/student-packs/${pack.universities?.slug}`}>{pack.universities?.acronym}</Link> / {pack.name}</nav>
+    <div className="mt-8 grid gap-10 lg:grid-cols-2">{pack.image_url?<div className="relative aspect-square overflow-hidden rounded-3xl border border-white/10"><Image src={pack.image_url} fill priority alt={pack.name} className="object-cover"/></div>:<div className="grid aspect-square place-items-center rounded-3xl border border-white/10 text-cyan-300/40">DENTANOVA</div>}
+      <div><div className="flex items-start justify-between gap-4"><div><p className="eyebrow">{pack.universities?.name}</p><h1 className="display mt-3 text-5xl">{pack.name}</h1></div><PackFavoriteButton packId={pack.id} locale={locale}/></div><p className="mt-3 text-white/55">{locale==="ar"?pack.academic_years?.label_ar:pack.academic_years?.label_fr}{pack.academic_session?` · ${pack.academic_session}`:""}</p>{pack.short_description&&<p className="mt-6 leading-7 text-white/60">{pack.short_description}</p>}
+        <div className="mt-7 rounded-2xl border border-white/10 p-5"><div className="flex justify-between"><span>{t("packPrice")}</span><b className="text-xl text-cyan-300">{price==null?t("priceOnRequest"):money(price)}</b></div>{pack.component_total!=null&&<div className="mt-3 flex justify-between text-sm text-white/50"><span>{t("componentTotal")}</span><span>{money(Number(pack.component_total))}</span></div>}{savings&&<div className="mt-3 flex justify-between text-sm text-emerald-300"><span>{t("savings")}</span><b>{money(savings.amount)} ({Math.round(savings.percentage)}%)</b></div>}<p className={`mt-4 text-sm ${availability.status==="in_stock"?"text-emerald-300":"text-red-300"}`}>{availability.status==="in_stock"?t("inStock"):t("unavailable")}</p></div><div className="mt-6"><PackAddToCart pack={pack} locale={locale}/></div>
+      </div></div>
+    <section className="mt-14"><h2 className="display text-3xl">{t("contents")}</h2><div className="mt-6 grid gap-3">{components.map(component=><div className="card flex items-center gap-4 p-4" key={component.id}>{component.products?.images?.[0]&&<span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl"><Image src={component.products.images[0]} fill alt="" className="object-cover"/></span>}<div className="min-w-0 flex-1"><Link href={`/product/${component.products?.slug}`} className="font-bold">{component.products?.name}</Link>{component.variation_id&&<p className="mt-1 text-xs text-cyan-300">{t("selectedVariation")}</p>}{component.notes&&<p className="mt-1 text-xs text-white/45">{component.notes}</p>}</div><div className="text-right"><b>×{component.quantity}</b><small className="block text-white/45">{component.is_required?t("required"):t("optional")}</small></div></div>)}</div></section>
+  </div></div>;
+}
