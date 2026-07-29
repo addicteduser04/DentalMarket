@@ -3,10 +3,12 @@ import Link from "next/link";
 import { ProductCard } from "@/components/storefront/product-card";
 import { getCatalog } from "@/lib/data";
 import { EmptyState } from "@/components/ui/empty-state";
+import {getLocale} from "@/lib/i18n-server";
 
 export default async function SearchPage({searchParams}:{searchParams:{q?:string}}) {
   const query=(searchParams.q||"").trim().toLowerCase();
   const {products,categories,offers}=await getCatalog();
+  const locale=getLocale();
   const foundCategories=query?categories.filter(category=>category.name.toLowerCase().includes(query)):[];
   const found=query?products.filter(product=>
     product.name.toLowerCase().includes(query) ||
@@ -29,7 +31,7 @@ export default async function SearchPage({searchParams}:{searchParams:{q?:string
     </div>}
     {!products.length ? <div className="mt-10"><EmptyState title="Notre catalogue arrive bientôt" text="La sélection DENTANOVA est en cours de préparation."/></div> : <>
       <p className="mt-8 text-sm text-white/50">{found.length} résultat{found.length!==1?"s":""}{query&&<> pour « {query} »</>}</p>
-      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{found.map(product=><ProductCard key={product.id} product={product} offers={offers}/>)}</div>
+      <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{found.map(product=><ProductCard key={product.id} product={product} offers={offers} locale={locale}/>)}</div>
     </>}
   </div></div>;
 }

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import {BarChart3,Boxes,ClipboardList,FolderTree,GraduationCap,LayoutDashboard,Megaphone,Percent,School,ShoppingBag,type LucideIcon} from "lucide-react";
+import {BarChart3,Boxes,ClipboardList,FolderTree,GraduationCap,LayoutDashboard,ListChecks,Megaphone,Percent,School,ShoppingBag,type LucideIcon} from "lucide-react";
 import {BrandLogo} from "@/components/brand-logo";
 import type {Locale,MessageKey} from "@/lib/i18n";
 import {translate} from "@/lib/i18n";
@@ -9,6 +9,7 @@ const links:Array<[string,string,LucideIcon,MessageKey?]>=[
  ["/admin/sales","Ventes",ShoppingBag],
  ["/admin/products","Produits",Boxes],
  ["/admin/student-packs","Packs étudiants",GraduationCap,"studentPacks"],
+ ["/admin/student-recommendations","Recommandations",ListChecks,"recommendationsAdmin"],
  ["/admin/universities","Universités",School,"universities"],
  ["/admin/academic-years","Années",FolderTree,"academicYears"],
  ["/admin/categories","Catégories",FolderTree],

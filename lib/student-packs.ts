@@ -11,6 +11,12 @@ export type PackComponent = {
   replacement_policy?:"none"|"admin_approved"|"equivalent";
   products?:import("./types").Product;
 };
+export type StudentRecommendation = {
+  id:string; university_id:string; academic_year_id:string; product_id:string;
+  variation_id?:string|null; source_url:string; source_product_url:string;
+  display_order:number; is_active:boolean; products?:import("./types").Product;
+  academic_years?:AcademicYear;
+};
 export type StudentPack = {
   id:string; university_id:string; academic_year_id:string; existing_product_id?:string|null;
   name:string; slug:string; short_description?:string|null; description?:string|null;

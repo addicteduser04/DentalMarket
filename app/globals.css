@@ -100,6 +100,11 @@ tbody tr:hover { background:rgba(255,255,255,.025); }
 .category-visual-card { isolation:isolate; border:1px solid rgba(255,255,255,.1); box-shadow:0 22px 50px rgba(0,0,0,.22); }
 .category-card-shade { background:linear-gradient(to top,rgba(2,7,11,.97),rgba(2,7,11,.12) 68%); }
 .product-grid-on-dark .card { color:#17211d; }
+.market-row { border-top:1px solid rgba(255,255,255,.055); }
+.market-row-track { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(250px,280px); gap:1rem; overflow-x:auto; overscroll-behavior-inline:contain; scroll-snap-type:inline mandatory; padding:.15rem .1rem 1rem; scrollbar-width:thin; scrollbar-color:rgba(104,221,251,.35) transparent; }
+.market-row-item { min-width:0; scroll-snap-align:start; }
+.market-product-card { min-height:430px; }
+.category-market-grid .category-visual-card { min-height:320px; }
 
 .account-center { min-height:calc(100vh - 5rem); background:#070c11; color:white; }
 .account-sidebar {
@@ -216,6 +221,8 @@ a.account-panel:hover { border-color:rgba(85,220,255,.24); transform:translateY(
   .homepage-hero-search input { padding-inline:.75rem; font-size:.88rem; }
   .homepage-hero-search button { min-height:42px; padding-inline:.9rem; font-size:0; }
   .homepage-hero-search button::after { content:"OK"; font-size:.78rem; }
+  .market-row-track { grid-auto-columns:minmax(235px,76vw); margin-inline-end:calc((100vw - min(1180px, calc(100vw - 32px)))/-2); padding-inline-end:1rem; }
+  .market-product-card { min-height:410px; }
 }
 @media (prefers-reduced-motion:reduce) {
   html { scroll-behavior:auto; }

@@ -1,5 +1,6 @@
 import { createClient, hasSupabaseEnv } from "./supabase/server";
 import type { Campaign, Category, Offer, Product } from "./types";
+import type {StudentPack,StudentRecommendation,University} from "./student-packs";
 export async function getCatalog() {
   const empty = { products: [] as Product[], categories: [] as Category[], offers: [] as Offer[], campaigns: [] as Campaign[] };
   if (!hasSupabaseEnv) return { ...empty, available: false };
@@ -18,5 +19,28 @@ export async function getCatalog() {
     offers:(o.data ?? []) as Offer[],
     campaigns:(ca.data ?? []) as Campaign[],
     available,
+  };
+}
+
+const homepageProductFields="id,name,slug,price,compare_at_price,category_id,images,stock_status,target_audience,variations,is_active,is_featured,sku,brand,price_mode,promotional_price,promotion_starts_at,promotion_ends_at,stock_tracking,stock_quantity,availability_status,publication_status,created_at";
+export async function getHomepageData(){
+  const empty={products:[] as Product[],categories:[] as Category[],offers:[] as Offer[],campaigns:[] as Campaign[],packs:[] as StudentPack[],universities:[] as University[],recommendations:[] as StudentRecommendation[]};
+  if(!hasSupabaseEnv)return {...empty,available:false};
+  const db=createClient(),now=new Date().toISOString();
+  const [p,c,o,ca,sp,u,r]=await Promise.all([
+    db.from("products").select(homepageProductFields).eq("is_active",true).eq("publication_status","published").eq("catalog_visible",true).order("created_at",{ascending:false}).limit(96),
+    db.from("categories").select("id,name,slug,parent_id,display_order").order("display_order"),
+    db.from("offers").select("*").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`),
+    db.from("campaigns").select("*").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`).limit(1),
+    db.from("student_packs").select("*,universities(*),academic_years(*)").eq("publication_status","published").order("display_order").limit(6),
+    db.from("universities").select("*").eq("is_active",true).order("display_order"),
+    db.from("student_recommended_products").select("id,product_id,university_id,academic_year_id,display_order,is_active").eq("is_active",true),
+  ]);
+  return {
+    products:(p.data||[]) as unknown as Product[],categories:(c.data||[]) as Category[],
+    offers:(o.data||[]) as Offer[],campaigns:(ca.data||[]) as Campaign[],
+    packs:(sp.data||[]) as unknown as StudentPack[],universities:(u.data||[]) as University[],
+    recommendations:(r.data||[]) as StudentRecommendation[],
+    available:![p,c,o,ca,sp,u].some(result=>result.error),
   };
 }
