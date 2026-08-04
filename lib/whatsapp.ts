@@ -1,6 +1,6 @@
 export const BUSINESS_WHATSAPP_DIGITS = "212659547879";
 export const BUSINESS_WHATSAPP_DISPLAY = "+212 659 547 879";
-export const DELIVERY_CITY = "Casablanca";
+export const DELIVERY_ZONE = "Partout au Maroc";
 
 export function normalizeWhatsAppDigits(value: string) {
   return value.replace(/\D/g, "");

@@ -5,7 +5,6 @@ import { useState } from "react";
 
 export function BrandLogo({
   compact = false,
-  inverted = false,
 }: {
   compact?: boolean;
   inverted?: boolean;
@@ -13,24 +12,19 @@ export function BrandLogo({
   const [failed, setFailed] = useState(false);
 
   return (
-    <span className="inline-flex items-center gap-3">
+    <span className="inline-flex items-center">
       {!failed && (
         <Image
           src="/branding/dentanova-logo.svg"
           alt="DENTANOVA"
-          width={compact ? 44 : 56}
-          height={compact ? 44 : 56}
-          className={`${compact ? "h-11 w-11" : "h-14 w-14"} rounded-full object-contain`}
+          width={compact ? 145 : 185}
+          height={compact ? 62 : 80}
+          className={`${compact ? "h-[62px] w-[145px]" : "h-20 w-[185px]"} object-contain`}
           onError={() => setFailed(true)}
           priority
         />
       )}
-      <span className="text-white">
-        <b className="display block text-xl tracking-tight">DENTANOVA</b>
-        <small className="block text-[9px] font-bold uppercase tracking-[.2em] text-cyan-300">
-          Casablanca
-        </small>
-      </span>
+      {failed && <b className="display text-xl tracking-tight text-white">DENTANOVA</b>}
     </span>
   );
 }

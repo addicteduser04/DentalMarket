@@ -7,7 +7,7 @@ import { Minus, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { useCart } from "@/lib/cart-store";
 import { money } from "@/lib/utils";
 import { buildWhatsAppMessage } from "@/lib/cart-to-whatsapp";
-import { createWhatsAppUrl, DELIVERY_CITY } from "@/lib/whatsapp";
+import { createWhatsAppUrl, DELIVERY_ZONE } from "@/lib/whatsapp";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export default function CartPage() {
@@ -28,7 +28,7 @@ export default function CartPage() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           deliveryAccepted,
-          deliveryCity: DELIVERY_CITY,
+          deliveryZone: DELIVERY_ZONE,
           campaignSlug: localStorage.getItem("active_campaign_slug"),
           items: items.map(item => ({
             item_type:item.itemType,
@@ -81,18 +81,18 @@ export default function CartPage() {
       <aside className="card h-fit p-6 lg:sticky lg:top-28">
         <h2 className="display text-2xl">Récapitulatif</h2>
         <div className="status-success mt-5 rounded-xl p-4 text-sm leading-6">
-          <b>Livraison à Casablanca uniquement</b>
-          <p className="mt-1 text-white/60">DENTANOVA livre actuellement exclusivement à Casablanca.</p>
+          <b>Livraison partout au Maroc</b>
+          <p className="mt-1 text-white/60">Nous livrons votre commande dans toutes les villes du Maroc.</p>
         </div>
         <div className="mt-6 grid gap-3 border-b border-ink/10 pb-5 text-sm">
           <div className="flex justify-between"><span className="text-white/55">Articles</span><span>{items.reduce((sum,item) => sum+item.quantity,0)}</span></div>
-          <div className="flex justify-between"><span className="text-white/55">Ville</span><strong>{DELIVERY_CITY}</strong></div>
+          <div className="flex justify-between"><span className="text-white/55">Zone</span><strong>{DELIVERY_ZONE}</strong></div>
           <div className="flex justify-between"><span className="text-white/55">Livraison</span><span>À convenir</span></div>
         </div>
         <div className="flex justify-between py-6 text-lg font-bold"><span>Total estimé</span><span>{money(total)}</span></div>
         <label className="mb-5 flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-white/[.04] p-4 text-sm leading-5">
           <input type="checkbox" checked={deliveryAccepted} onChange={event => setDeliveryAccepted(event.target.checked)} className="mt-1 h-4 w-4"/>
-          <span>Je confirme que l’adresse de livraison se situe à Casablanca.</span>
+          <span>Je confirme que l’adresse de livraison se situe au Maroc.</span>
         </label>
         <button onClick={submit} disabled={!deliveryAccepted || submitting} className="button w-full !bg-[#1f9d55] disabled:cursor-not-allowed disabled:opacity-45">
           {submitting ? "Préparation…" : "Confirmer sur WhatsApp"}

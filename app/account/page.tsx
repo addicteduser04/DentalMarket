@@ -25,7 +25,7 @@ export default async function AccountPage(){
     <div className="mt-5 grid gap-4 md:grid-cols-3">
       <OverviewCard href="/account/favorites" icon={<BookHeart/>} label="Favoris" value={String(favorites||0)} detail="Produits enregistrés"/>
       <OverviewCard href="/account/orders" icon={<ClipboardList/>} label="Demandes" value={String(requests?.length||0)} detail="Activité récente"/>
-      <OverviewCard href="/account/delivery" icon={<MapPin/>} label="Livraison" value={address?.district||"À compléter"} detail="Casablanca exclusivement"/>
+      <OverviewCard href="/account/delivery" icon={<MapPin/>} label="Livraison" value={address?.district||"À compléter"} detail="Livraison partout au Maroc"/>
     </div>
     <div className="mt-5 grid gap-5 xl:grid-cols-2">
       <section className="account-panel p-6"><h2 className="flex items-center gap-2 text-lg font-bold"><ClipboardList className="text-cyan-300" size={19}/>Demandes récentes</h2>{requests?.length?<div className="mt-4 grid gap-2">{requests.map(row=><Link href="/account/orders" key={row.id} className="flex items-center justify-between rounded-xl bg-white/[.04] p-3 text-sm"><span>Demande {String(row.id).slice(0,8).toUpperCase()}</span><span className="text-white/45">{new Date(row.created_at).toLocaleDateString("fr-MA")}</span></Link>)}</div>:<p className="mt-5 text-sm text-white/45">Aucune demande enregistrée.</p>}</section>

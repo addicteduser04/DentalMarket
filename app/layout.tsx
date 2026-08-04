@@ -8,11 +8,11 @@ import { CampaignCapture } from "@/components/storefront/campaign-capture";
 import {getLocale} from "@/lib/i18n-server";
 export const metadata:Metadata={
   metadataBase:new URL("https://dental-market-bay.vercel.app"),
-  title:{default:"DENTANOVA | Matériel dentaire professionnel à Casablanca",template:"%s · DENTANOVA"},
-  description:"DENTANOVA fournit du matériel dentaire professionnel avec livraison exclusivement à Casablanca.",
+  title:{default:"DENTANOVA | Matériel dentaire professionnel au Maroc",template:"%s · DENTANOVA"},
+  description:"DENTANOVA fournit du matériel dentaire professionnel avec livraison partout au Maroc.",
   openGraph:{
-    title:"DENTANOVA | Matériel dentaire professionnel à Casablanca",
-    description:"Une sélection professionnelle de matériel dentaire, disponible à Casablanca.",
+    title:"DENTANOVA | Matériel dentaire professionnel au Maroc",
+    description:"Une sélection professionnelle de matériel dentaire, livrée partout au Maroc.",
     type:"website",
     locale:"fr_MA",
     images:[{url:"/opengraph-image.png",width:1200,height:630,alt:"DENTANOVA"}],

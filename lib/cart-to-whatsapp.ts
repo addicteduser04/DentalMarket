@@ -2,7 +2,7 @@ export type WhatsAppItem = {
   name:string; itemType?:"product"|"student_pack"; variationLabel?:string; quantity:number; price:number;
   university?:string; academicYear?:string; academicSession?:string; packCode?:string; componentSummary?:string[];
 };
-import { createWhatsAppUrl, DELIVERY_CITY } from "./whatsapp";
+import { createWhatsAppUrl, DELIVERY_ZONE } from "./whatsapp";
 
 export function buildWhatsAppMessage(items: WhatsAppItem[], customerName?: string) {
   const lines = items.flatMap(i => i.itemType==="student_pack"?[
@@ -19,8 +19,8 @@ export function buildWhatsAppMessage(items: WhatsAppItem[], customerName?: strin
     ...lines,
     `Total estimé : ${total.toFixed(2)} MAD`,
     customerName ? `Client : ${customerName}` : "",
-    `Ville de livraison : ${DELIVERY_CITY}`,
-    "La livraison est actuellement disponible exclusivement à Casablanca.",
+    `Zone de livraison : ${DELIVERY_ZONE}`,
+    "Livraison partout au Maroc.",
   ].filter(Boolean).join("\n");
 }
 

@@ -38,10 +38,10 @@ describe("secure account changes", () => {
 });
 
 describe("delivery and navigation", () => {
-  it("accepts Casablanca and rejects every other city", () => {
+  it("accepts Moroccan delivery cities", () => {
     const base={recipient_name:"Aya",phone:"0659547879",address_line:"10 rue",district:"Maarif"};
     expect(validateCasablancaAddress({...base,city:"Casablanca"}).valid).toBe(true);
-    expect(validateCasablancaAddress({...base,city:"Rabat"}).valid).toBe(false);
+    expect(validateCasablancaAddress({...base,city:"Rabat"}).valid).toBe(true);
   });
 
   it("shows administration only to administrators", () => {

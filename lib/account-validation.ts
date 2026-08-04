@@ -63,7 +63,7 @@ export function passwordStrength(password: string) {
   return { score, valid: score >= 4 && checks[0], label: score < 3 ? "Faible" : score < 5 ? "Correct" : "Fort" };
 }
 
-export function validateCasablancaAddress(input: {
+export function validateMoroccanAddress(input: {
   recipient_name: string; phone: string; address_line: string; district: string;
   postal_code?: string; delivery_instructions?: string; city: string;
 }) {
@@ -73,9 +73,13 @@ export function validateCasablancaAddress(input: {
   if (!phone) errors.phone = "Numéro marocain invalide.";
   if (!input.address_line.trim()) errors.address_line = "Adresse requise.";
   if (!input.district.trim()) errors.district = "Quartier requis.";
-  if (input.city !== "Casablanca") errors.city = "La livraison est limitée à Casablanca.";
-  return { valid: !Object.keys(errors).length, errors, data: { ...input, phone, city: "Casablanca" as const } };
+  const city = input.city.trim();
+  if (!city) errors.city = "Ville requise.";
+  return { valid: !Object.keys(errors).length, errors, data: { ...input, phone, city } };
 }
+
+/** @deprecated Use validateMoroccanAddress. */
+export const validateCasablancaAddress = validateMoroccanAddress;
 
 export function accountNavigation(isAdmin: boolean) {
   const base = [
