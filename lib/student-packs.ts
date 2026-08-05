@@ -40,10 +40,10 @@ export function activePackPrice(pack:StudentPack, now=new Date()) {
 }
 
 export function packSavings(pack:StudentPack, now=new Date()) {
-  const price=activePackPrice(pack,now), total=pack.component_total;
-  if (price==null||total==null||!Number.isFinite(Number(total))||Number(total)<=price) return null;
-  const amount=Number(total)-price;
-  return {amount,percentage:amount/Number(total)*100};
+  const price=activePackPrice(pack,now),regular=pack.manual_price;
+  if(price==null||regular==null||!Number.isFinite(Number(regular))||Number(regular)<=price)return null;
+  const amount=Number(regular)-price;
+  return {amount,percentage:amount/Number(regular)*100};
 }
 
 export function packAvailability(pack:StudentPack) {
