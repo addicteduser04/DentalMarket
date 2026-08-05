@@ -71,16 +71,26 @@ export async function POST(request: Request) {
   if(validated.some(item=>!item))return NextResponse.json({error:translate(getLocale(),"cartUnavailable")},{status:409});
   const safeItems=validated as SubmittedItem[];
   const estimatedTotal = safeItems.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const { error } = await db.from("cart_submissions").insert({
+  const submission = {
     user_id: user?.id ?? null,
     items:safeItems,
     estimated_total: estimatedTotal,
     campaign_slug: typeof body?.campaignSlug === "string" ? body.campaignSlug : null,
     status: "whatsapp_handoff",
     delivery_city: DELIVERY_ZONE,
-  });
+  };
+  let {error}=await db.from("cart_submissions").insert(submission);
+
+  // Remain compatible with databases that have not applied the Morocco-wide
+  // delivery migration yet. The intended zone is retained in the JSON field.
+  if(error?.code==="23514"&&error.message.toLowerCase().includes("delivery_city")){
+    console.warn("Apply migration 20260805120000_delivery_all_morocco.sql to remove the legacy delivery-city constraint.");
+    const retry=await db.from("cart_submissions").insert({...submission,delivery_city:"Casablanca",delivery_address:{zone:DELIVERY_ZONE}});
+    error=retry.error;
+  }
 
   if (error) {
+    console.error("cart submission insert failed",{code:error.code,message:error.message,details:error.details});
     return NextResponse.json({ error: "Impossible d’enregistrer la demande. Réessayez." }, { status: 502 });
   }
 

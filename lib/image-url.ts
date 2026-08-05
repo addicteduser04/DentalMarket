@@ -8,6 +8,11 @@ export function isPublicImageUrl(value:unknown):value is string {
   return url.startsWith("/")||/^https?:\/\//i.test(url);
 }
 
+/** This legacy WordPress host is unreliable when called by Next's optimizer. */
+export function shouldBypassImageOptimization(url:string){
+  try{return new URL(url).hostname==="dentalmarket.ma"}catch{return false}
+}
+
 export function sanitizeProductImages<T extends Product>(product:T):T {
   return {
     ...product,
