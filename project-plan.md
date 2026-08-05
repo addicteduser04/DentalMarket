@@ -147,7 +147,7 @@ type CartItem = {
   price: number;
 };
 
-const WHATSAPP_NUMBER = "212659547879"; // canonical digits, no + or spaces
+const WHATSAPP_NUMBER = "212612133240"; // canonical digits, no + or spaces
 
 export function buildWhatsAppMessage(items: CartItem[], customerName?: string) {
   const lines = items.map(

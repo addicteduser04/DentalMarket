@@ -1,5 +1,5 @@
-export const BUSINESS_WHATSAPP_DIGITS = "212659547879";
-export const BUSINESS_WHATSAPP_DISPLAY = "+212 659 547 879";
+export const BUSINESS_WHATSAPP_DIGITS = "212612133240";
+export const BUSINESS_WHATSAPP_DISPLAY = "+212 612 133 240";
 export const DELIVERY_ZONE = "Partout au Maroc";
 
 export function normalizeWhatsAppDigits(value: string) {
