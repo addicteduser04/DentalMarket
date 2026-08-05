@@ -1,6 +1,7 @@
 export type WhatsAppItem = {
   name:string; itemType?:"product"|"student_pack"; variationLabel?:string; quantity:number; price:number;
   university?:string; academicYear?:string; academicSession?:string; packCode?:string; componentSummary?:string[];
+  optionalComponentSummary?:string[];
 };
 import { createWhatsAppUrl, DELIVERY_ZONE } from "./whatsapp";
 
@@ -12,6 +13,7 @@ export function buildWhatsAppMessage(items: WhatsAppItem[], customerName?: strin
     i.academicSession?`  Session : ${i.academicSession}`:"",
     i.packCode?`  Code : ${i.packCode}`:"",
     i.componentSummary?.length?`  Contenu : ${i.componentSummary.join(", ")}`:"",
+    i.optionalComponentSummary?.length?`  Options : ${i.optionalComponentSummary.join(", ")}`:"",
   ].filter(Boolean):[`- ${i.name}${i.variationLabel ? ` (${i.variationLabel})` : ""} x${i.quantity} — ${(i.price * i.quantity).toFixed(2)} MAD`]);
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   return [

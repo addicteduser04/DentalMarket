@@ -38,6 +38,7 @@ export default function CartPage() {
             variation_label: item.variationLabel,
             qty: item.quantity,
             price: item.price,
+            optional_component_ids:item.optionalComponentIds,
           })),
         }),
       });
@@ -67,6 +68,7 @@ export default function CartPage() {
           <div className="min-w-0 flex-1">
             <Link href={item.itemType==="student_pack"?`/student-packs/${item.universitySlug||"pack"}/${item.slug}`:`/product/${item.slug}`} className="font-bold">{item.name}</Link>
             {item.variationLabel && <p className="mt-1 text-xs text-white/45">{item.variationLabel}</p>}
+            {item.optionalComponentSummary?.length ? <p className="mt-1 text-xs leading-5 text-white/55">Options : {item.optionalComponentSummary.join(", ")}</p> : null}
             <p className="mt-2 text-sm font-bold text-cyan-300">{money(item.price)}</p>
           </div>
           <div className="flex items-center rounded-full border border-white/15 bg-white/[.04]">
