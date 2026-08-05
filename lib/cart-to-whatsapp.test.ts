@@ -22,6 +22,18 @@ describe("buildWhatsAppMessage", () => {
     expect(normalizeWhatsAppDigits("+212 612 133 240")).toBe(BUSINESS_WHATSAPP_DIGITS);
   });
 
+  it("formats the snake-case items returned by the cart submission API", () => {
+    const message = buildWhatsAppMessage([
+      {item_type:"product",name:"Sonde",variation_label:"Fine",qty:2,price:35},
+      {item_type:"student_pack",name:"Pack clinique",qty:1,price:220,packCode:"PACK-1"},
+    ]);
+
+    expect(message).toContain("- Sonde (Fine) x2 — 70.00 MAD");
+    expect(message).toContain("- Pack étudiant : Pack clinique x1 — 220.00 MAD");
+    expect(message).toContain("Total estimé : 290.00 MAD");
+    expect(message).not.toContain("NaN");
+  });
+
   it("does not let a stale deployment environment override the canonical destination", () => {
     const previous = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
     process.env.NEXT_PUBLIC_WHATSAPP_NUMBER = "212659547879";

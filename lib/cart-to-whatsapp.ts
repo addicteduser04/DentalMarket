@@ -3,10 +3,22 @@ export type WhatsAppItem = {
   university?:string; academicYear?:string; academicSession?:string; packCode?:string; componentSummary?:string[];
   optionalComponentSummary?:string[];
 };
+type WhatsAppMessageItem = Omit<WhatsAppItem,"quantity"> & {
+  quantity?:number;
+  item_type?:WhatsAppItem["itemType"];
+  variation_label?:string;
+  qty?:number;
+};
 import { createWhatsAppUrl, DELIVERY_ZONE } from "./whatsapp";
 
-export function buildWhatsAppMessage(items: WhatsAppItem[], customerName?: string) {
-  const lines = items.flatMap(i => i.itemType==="student_pack"?[
+export function buildWhatsAppMessage(items: WhatsAppMessageItem[], customerName?: string) {
+  const normalized = items.map(item => ({
+    ...item,
+    itemType:item.itemType ?? item.item_type,
+    variationLabel:item.variationLabel ?? item.variation_label,
+    quantity:item.quantity ?? item.qty ?? 0,
+  }));
+  const lines = normalized.flatMap(i => i.itemType==="student_pack"?[
     `- Pack étudiant : ${i.name} x${i.quantity} — ${(i.price*i.quantity).toFixed(2)} MAD`,
     i.university?`  Université : ${i.university}`:"",
     i.academicYear?`  Année : ${i.academicYear}`:"",
@@ -15,7 +27,7 @@ export function buildWhatsAppMessage(items: WhatsAppItem[], customerName?: strin
     i.componentSummary?.length?`  Contenu : ${i.componentSummary.join(", ")}`:"",
     i.optionalComponentSummary?.length?`  Options : ${i.optionalComponentSummary.join(", ")}`:"",
   ].filter(Boolean):[`- ${i.name}${i.variationLabel ? ` (${i.variationLabel})` : ""} x${i.quantity} — ${(i.price * i.quantity).toFixed(2)} MAD`]);
-  const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+  const total = normalized.reduce((sum, i) => sum + i.price * i.quantity, 0);
   return [
     "Bonjour DENTANOVA, je souhaite commander :",
     ...lines,
