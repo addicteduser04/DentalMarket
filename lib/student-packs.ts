@@ -47,28 +47,9 @@ export function packSavings(pack:StudentPack, now=new Date()) {
 }
 
 export function packAvailability(pack:StudentPack) {
-  if(pack.availability_strategy==="manual") return {
-    status:pack.availability_override||"out_of_stock",
-    quantity:pack.stock_quantity_override??0,
-  };
-  const required=(pack.student_pack_components||[]).filter(component=>component.is_required);
-  if(!required.length) return {status:"out_of_stock" as const,quantity:0};
-  let maximum=Number.POSITIVE_INFINITY;
-  for(const component of required){
-    const product=component.products;
-    if(!product||["out_of_stock","unavailable"].includes(product.availability_status||product.stock_status))
-      return {status:"out_of_stock" as const,quantity:0};
-    if(product.stock_tracking){
-      const variation=component.variation_id?product.variations?.find(item=>
-        item.id===component.variation_id||item.source_id===component.variation_id):null;
-      if(variation&&variation.availability==="out_of_stock")
-        return {status:"out_of_stock" as const,quantity:0};
-      const stock=Number(variation?.stock_quantity??product.stock_quantity??0);
-      maximum=Math.min(maximum,Math.floor(stock/component.quantity));
-    }
-  }
-  const quantity=Number.isFinite(maximum)?maximum:null;
-  return {status:quantity===0?"out_of_stock" as const:"in_stock" as const,quantity};
+  // Student packs are sold as an available service even when an individual
+  // component needs to be sourced. Component stock remains visible separately.
+  return {status:"in_stock" as const,quantity:null};
 }
 
 export function packCartKey(packId:string){return `pack:${packId}`;}

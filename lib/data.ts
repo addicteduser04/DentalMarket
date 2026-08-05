@@ -1,6 +1,7 @@
 import { createClient, hasSupabaseEnv } from "./supabase/server";
 import type { Campaign, Category, Offer, Product } from "./types";
 import type {StudentPack,StudentRecommendation,University} from "./student-packs";
+import {isPublicImageUrl,sanitizeProductImages} from "./image-url";
 export async function getCatalog() {
   const empty = { products: [] as Product[], categories: [] as Category[], offers: [] as Offer[], campaigns: [] as Campaign[] };
   if (!hasSupabaseEnv) return { ...empty, available: false };
@@ -14,7 +15,7 @@ export async function getCatalog() {
   ]);
   const available = !p.error && !c.error && !o.error && !ca.error;
   return {
-    products:(p.data ?? []) as Product[],
+    products:((p.data ?? []) as Product[]).map(sanitizeProductImages),
     categories:(c.data ?? []) as Category[],
     offers:(o.data ?? []) as Offer[],
     campaigns:(ca.data ?? []) as Campaign[],
@@ -37,9 +38,9 @@ export async function getHomepageData(){
     db.from("student_recommended_products").select("id,product_id,university_id,academic_year_id,display_order,is_active").eq("is_active",true),
   ]);
   return {
-    products:(p.data||[]) as unknown as Product[],categories:(c.data||[]) as Category[],
+    products:((p.data||[]) as unknown as Product[]).map(sanitizeProductImages),categories:(c.data||[]) as Category[],
     offers:(o.data||[]) as Offer[],campaigns:(ca.data||[]) as Campaign[],
-    packs:(sp.data||[]) as unknown as StudentPack[],universities:(u.data||[]) as University[],
+    packs:((sp.data||[]) as unknown as StudentPack[]).map(pack=>({...pack,image_url:isPublicImageUrl(pack.image_url)?pack.image_url:null})),universities:((u.data||[]) as University[]).map(university=>({...university,image_url:isPublicImageUrl(university.image_url)?university.image_url:null})),
     recommendations:(r.data||[]) as StudentRecommendation[],
     available:![p,c,o,ca,sp,u].some(result=>result.error),
   };
