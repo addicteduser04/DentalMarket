@@ -7,12 +7,7 @@ export function normalizeWhatsAppDigits(value: string) {
 }
 
 export function getBusinessWhatsAppDigits() {
-  const configured = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
-  const digits = normalizeWhatsAppDigits(configured || BUSINESS_WHATSAPP_DIGITS);
-  if (digits !== BUSINESS_WHATSAPP_DIGITS) {
-    throw new Error("Invalid business WhatsApp configuration.");
-  }
-  return digits;
+  return BUSINESS_WHATSAPP_DIGITS;
 }
 
 export function createWhatsAppUrl(message?: string) {

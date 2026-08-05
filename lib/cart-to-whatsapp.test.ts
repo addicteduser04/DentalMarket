@@ -21,4 +21,16 @@ describe("buildWhatsAppMessage", () => {
     expect(url).toBe("https://wa.me/212612133240?text=Bonjour%20DENTANOVA%0ACasablanca%20%26%20mat%C3%A9riel");
     expect(normalizeWhatsAppDigits("+212 612 133 240")).toBe(BUSINESS_WHATSAPP_DIGITS);
   });
+
+  it("does not let a stale deployment environment override the canonical destination", () => {
+    const previous = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER = "212659547879";
+
+    try {
+      expect(createWhatsAppUrl()).toBe("https://wa.me/212612133240");
+    } finally {
+      if (previous === undefined) delete process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+      else process.env.NEXT_PUBLIC_WHATSAPP_NUMBER = previous;
+    }
+  });
 });
