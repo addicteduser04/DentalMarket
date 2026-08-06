@@ -62,7 +62,7 @@ export function ProductForm({categories,product}:{categories:Category[];product?
       product_type:String(values.get("product_type")||"").trim()||null,short_summary:String(values.get("short_summary")||"").trim()||null,
       description:String(values.get("description")||"").trim()||null,technical_specs:specifications,condition:values.get("condition"),
       warranty:String(values.get("warranty")||"").trim()||null,category_id:draft.category_id||null,images,image_metadata:media,
-      price:draft.price,compare_at_price:draft.promotional_price,price_mode:draft.price_mode,promotional_price:draft.promotional_price,
+      price:draft.price,compare_at_price:draft.price,price_mode:draft.price_mode,promotional_price:draft.promotional_price,
       promotion_starts_at:draft.promotion_starts_at||null,promotion_ends_at:draft.promotion_ends_at||null,
       stock_tracking:draft.stock_tracking,stock_quantity:draft.stock_quantity,low_stock_threshold:draft.low_stock_threshold,
       stock_status:draft.availability_status==="low_stock"?"in_stock":draft.availability_status==="unavailable"?"out_of_stock":draft.availability_status,
