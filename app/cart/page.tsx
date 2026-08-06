@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import {ProductImage} from "@/components/storefront/product-image";
 import Link from "next/link";
 import { useState } from "react";
 import { Minus, Plus, ShieldCheck, Trash2 } from "lucide-react";
@@ -64,7 +64,7 @@ export default function CartPage() {
     <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_380px]">
       <div className="grid gap-3">
         {items.map(item => <div key={item.key} className="card flex items-center gap-4 p-4">
-          {item.image && <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-white/[.05]"><Image src={item.image} fill alt="" className="object-cover"/></div>}
+          {item.image && <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-white"><ProductImage src={item.image} alt={item.name} sizes="96px" className="p-1"/></div>}
           <div className="min-w-0 flex-1">
             <Link href={item.itemType==="student_pack"?`/student-packs/${item.universitySlug||"pack"}/${item.slug}`:`/product/${item.slug}`} className="font-bold">{item.name}</Link>
             {item.variationLabel && <p className="mt-1 text-xs text-white/45">{item.variationLabel}</p>}

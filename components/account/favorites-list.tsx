@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import {ProductImage} from "@/components/storefront/product-image";
 import Link from "next/link";
 import { ExternalLink, HeartOff, Search, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -25,7 +25,7 @@ export function FavoritesList({initial}:{initial:FavoriteItem[]}) {
     </div>
     {message&&<p role="status" className="account-feedback mt-4">{message}</p>}
     {!filtered.length?<div className="account-empty mt-5"><Search/><h2>Aucun résultat</h2><p>Modifiez votre recherche ou votre filtre.</p></div>:<div className="mt-5 grid gap-4 md:grid-cols-2">{filtered.map(item=><article key={item.product.id} className="account-panel overflow-hidden">
-      <div className="relative aspect-[16/9] bg-white/[.04]">{item.product.images?.[0]?<Image src={item.product.images[0]} alt={item.product.name} fill className="object-cover"/>:<div className="grid h-full place-items-center text-white/30">{<BrandLogo compact inverted/>}</div>}</div>
+      <div className="relative aspect-[16/9] bg-white">{item.product.images?.[0]?<ProductImage src={item.product.images[0]} alt={item.product.name} sizes="(max-width: 768px) 100vw, 50vw" className="p-3"/>:<div className="grid h-full place-items-center bg-[#0d151d] text-white/30">{<BrandLogo compact inverted/>}</div>}</div>
       <div className="p-5"><p className="text-xs font-bold uppercase tracking-[.14em] text-cyan-300">{item.product.categories?.name||"Catalogue"}</p><h2 className="mt-2 text-xl font-bold">{item.product.name}</h2><div className="mt-3 flex items-center justify-between"><span className="font-bold">{money(Number(item.product.price))}</span><span className="text-xs text-white/45">{item.product.stock_status==="in_stock"?"En stock":item.product.stock_status==="on_order"?"Sur commande":"Indisponible"}</span></div><p className="mt-3 text-xs text-white/35">Ajouté le {new Date(item.created_at).toLocaleDateString("fr-MA")}</p><div className="mt-5 flex flex-wrap gap-2"><Link href={`/product/${item.product.slug}`} className="account-button-secondary">Voir <ExternalLink size={15}/></Link><a href={createWhatsAppUrl(`Bonjour DENTANOVA, je souhaite des informations sur ${item.product.name}.`)} className="account-button-secondary">WhatsApp</a><button onClick={()=>remove(item.product.id)} className="account-danger-button ml-auto"><HeartOff size={15}/></button></div></div>
     </article>)}</div>}
   </div>

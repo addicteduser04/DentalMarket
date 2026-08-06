@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="title description">
+  <title id="title">DENTANOVA product image placeholder</title>
+  <desc id="description">A neutral placeholder used when a product image is unavailable.</desc>
+  <rect width="800" height="600" fill="#f4f7f8"/>
+  <g fill="none" stroke="#9babb2" stroke-linecap="round" stroke-linejoin="round" stroke-width="18">
+    <path d="M323 208c19-29 49-44 77-44s58 15 77 44c19 30 25 69 16 109-7 32-18 63-24 95-8 42-15 62-30 62-16 0-18-27-22-63-3-28-8-43-17-43s-14 15-17 43c-4 36-6 63-22 63-15 0-22-20-30-62-6-32-17-63-24-95-9-40-3-79 16-109Z"/>
+    <path d="M360 228c23 15 57 15 80 0"/>
+  </g>
+  <text x="400" y="535" fill="#60757e" font-family="Arial, sans-serif" font-size="28" font-weight="700" text-anchor="middle">DENTANOVA</text>
+</svg>

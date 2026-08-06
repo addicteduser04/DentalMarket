@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, MessageCircle } from "lucide-react";
 import type { Offer, Product } from "@/lib/types";
@@ -8,9 +7,10 @@ import { FavoriteButton } from "./favorite-button";
 import {translate,type Locale} from "@/lib/i18n";
 import { BrandLogo } from "@/components/brand-logo";
 import {createWhatsAppUrl} from "@/lib/whatsapp";
+import {ProductImage} from "./product-image";
 export function ProductCard({product,offers,locale="fr"}:{product:Product;offers:Offer[];locale?:Locale}){const t=(key:Parameters<typeof translate>[1])=>translate(locale,key),offer=bestOffer(product,offers), price=priceWithOffer(Number(product.price),offer),promo=product.promotional_price!=null&&(!product.promotion_starts_at||new Date(product.promotion_starts_at)<=new Date())&&(!product.promotion_ends_at||new Date(product.promotion_ends_at)>=new Date())?Number(product.promotional_price):null,status=product.availability_status||product.stock_status;return <article className="market-product-card group relative flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-white/10 bg-[#0d151d] shadow-[0_18px_45px_rgba(0,0,0,.2)] transition duration-200 hover:-translate-y-1 hover:border-cyan-300/25">
   <Link href={`/product/${product.slug}`}>
-    <div className="relative aspect-[4/3] overflow-hidden bg-white/[.04]">{product.images?.[0]?<Image fill src={product.images[0]} alt={product.name} sizes="(max-width: 640px) 72vw, (max-width: 1024px) 34vw, 260px" className="object-cover transition duration-500 group-hover:scale-105"/>:<div className="grid h-full place-items-center text-cyan-300/50">{<BrandLogo compact inverted/>}</div>}
+    <div className="relative aspect-[4/3] overflow-hidden bg-white">{product.images?.[0]?<ProductImage src={product.images[0]} alt={product.name} sizes="(max-width: 640px) 72vw, (max-width: 1024px) 34vw, 260px" className="p-3 transition duration-500 group-hover:scale-105"/>:<div className="grid h-full place-items-center bg-[#0d151d] text-cyan-300/50">{<BrandLogo compact inverted/>}</div>}
       {(offer||promo!=null)&&<span className="absolute left-3 top-3 rounded-full bg-cyan-400 px-3 py-1 text-xs font-bold text-[#061017]">{offer?.badge_text||t("offer")}</span>}
       <span className="absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-[#091018]/90 text-white shadow-md transition group-hover:bg-cyan-300 group-hover:text-[#061017]"><ArrowUpRight size={17}/></span>
     </div>

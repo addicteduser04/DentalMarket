@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import {ProductImage} from "./product-image";
 import {Check, ShoppingBag, X} from "lucide-react";
 import {useEffect, useMemo, useState} from "react";
 import {useCart} from "@/lib/cart-store";
@@ -54,7 +54,7 @@ export function PackAddToCart({pack,locale="fr"}:{pack:StudentPack;locale?:Local
         <div className="flex items-start justify-between gap-4"><div><p className="eyebrow">{pack.name}</p><h2 id="pack-options-title" className="display mt-2 text-3xl">{t("chooseOptions")}</h2><p className="mt-2 text-sm text-white/55">{t("optionsIntro")}</p></div><button className="rounded-full border border-white/15 p-2 text-white/60 hover:text-white" onClick={()=>setOpen(false)} aria-label={t("close")}><X size={19}/></button></div>
         <div className="mt-6 grid gap-3">{optional.map(component=>{const product=component.products,checked=selected.includes(component.id),unitPrice=optionPrice(component),linePrice=unitPrice*component.quantity;return <label key={component.id} className={`flex cursor-pointer items-center gap-4 rounded-2xl border p-4 transition ${checked?"border-cyan-300 bg-cyan-300/10":"border-white/10 bg-white/[.025] hover:border-white/25"}`}>
           <input className="sr-only" type="checkbox" checked={checked} onChange={()=>setSelected(current=>checked?current.filter(id=>id!==component.id):[...current,component.id])}/>
-          {product?.images?.[0]?<span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl"><Image src={product.images[0]} fill alt="" sizes="64px" className="object-cover"/></span>:null}
+          {product?.images?.[0]?<span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-white"><ProductImage src={product.images[0]} alt={product.name} sizes="64px" className="p-1"/></span>:null}
           <span className="min-w-0 flex-1"><b className="block">{product?.name}</b><small className="mt-1 block text-white/45">×{component.quantity}{component.notes?` · ${component.notes}`:""}</small></span>
           <span className="text-right"><b className="block text-cyan-300">+ {money(linePrice)}</b><span className={`ml-auto mt-2 grid h-6 w-6 place-items-center rounded-full border ${checked?"border-cyan-300 bg-cyan-300 text-slate-950":"border-white/25"}`}>{checked?<Check size={15}/>:null}</span></span>
         </label>})}</div>
