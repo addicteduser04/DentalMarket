@@ -26,7 +26,7 @@ export function WhatsAppFloatButton() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Contacter DENTANOVA sur WhatsApp"
-        className="grid h-14 w-14 place-items-center rounded-full bg-[#1f9d55] text-white shadow-[0_14px_36px_rgba(31,157,85,.4)] transition hover:-translate-y-1 hover:brightness-105"
+        className="grid h-14 w-14 place-items-center rounded-full bg-[#1f9d55] text-[#f4f8fb] shadow-[0_14px_36px_rgba(31,157,85,.4)] transition hover:-translate-y-1 hover:brightness-105"
       >
         <MessageCircle size={26}/>
       </a>

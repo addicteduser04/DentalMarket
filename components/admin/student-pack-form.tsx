@@ -79,7 +79,7 @@ export function StudentPackForm({pack,universities,years,products,locale="fr"}:P
    </aside>
   </form>
   {message&&<div role="status" className={`fixed bottom-5 right-5 z-50 max-w-sm rounded-2xl p-4 shadow-2xl ${message.includes("Impossible")?"status-error":"status-success"}`}>{message}</div>}
-  {dirty&&<div className="sticky bottom-4 z-30 mx-auto mt-6 flex max-w-md items-center justify-between rounded-full border border-amber-300/20 bg-[#17140c]/95 px-5 py-3 text-sm shadow-2xl backdrop-blur"><span>Modifications non enregistrées</span><button form="student-pack-editor" className="font-bold text-cyan-300">{t("save")}</button></div>}
+  {dirty&&<div className="sticky bottom-4 z-30 mx-auto mt-6 flex max-w-md items-center justify-between rounded-full border border-amber-300/20 bg-[var(--dn-warning-surface)] px-5 py-3 text-sm shadow-2xl backdrop-blur"><span>Modifications non enregistrées</span><button form="student-pack-editor" className="font-bold text-cyan-300">{t("save")}</button></div>}
  </div>;
 }
 

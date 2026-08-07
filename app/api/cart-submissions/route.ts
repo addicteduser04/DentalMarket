@@ -3,6 +3,7 @@ import { createClient, hasSupabaseEnv } from "@/lib/supabase/server";
 import { DELIVERY_ZONE } from "@/lib/whatsapp";
 import {getLocale} from "@/lib/i18n-server";
 import {translate} from "@/lib/i18n";
+import {getClientIp, hashFingerprint} from "@/lib/rate-limit";
 
 type SubmittedItem = {
   item_type: "product"|"student_pack";
@@ -15,6 +16,12 @@ type SubmittedItem = {
   optional_component_ids?: string[];
 };
 
+function sanitizeLabel(value?: string) {
+  if (typeof value !== "string") return undefined;
+  const cleaned = value.replace(/[\r\n\t]+/g, " ").trim().slice(0, 120);
+  return cleaned || undefined;
+}
+
 export async function POST(request: Request) {
   if (!hasSupabaseEnv) {
     return NextResponse.json({ error: "Service temporairement indisponible." }, { status: 503 });
@@ -23,6 +30,7 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const items = Array.isArray(body?.items) ? body.items.map((item:SubmittedItem)=>({
     ...item,item_type:item.item_type||(item.product_id?"product":item.pack_id?"student_pack":undefined),
+    variation_label:sanitizeLabel(item.variation_label),
   })) as SubmittedItem[] : undefined;
   const deliveryAccepted = body?.deliveryAccepted === true;
 
@@ -37,6 +45,11 @@ export async function POST(request: Request) {
   }
 
   const db = createClient();
+  const fingerprint = hashFingerprint(getClientIp(request.headers));
+  const { data: allowed, error: rateLimitError } = await db.rpc("check_cart_submission_rate_limit", { p_fingerprint: fingerprint });
+  if (!rateLimitError && allowed === false) {
+    return NextResponse.json({ error: "Trop de demandes. Réessayez dans quelques minutes." }, { status: 429 });
+  }
   const { data: { user } } = await db.auth.getUser();
   const productIds=items.filter(i=>i.item_type==="product").map(i=>i.product_id as string);
   const packIds=items.filter(i=>i.item_type==="student_pack").map(i=>i.pack_id as string);
@@ -78,6 +91,7 @@ export async function POST(request: Request) {
     campaign_slug: typeof body?.campaignSlug === "string" ? body.campaignSlug : null,
     status: "whatsapp_handoff",
     delivery_city: DELIVERY_ZONE,
+    client_fingerprint: fingerprint,
   };
   let {error}=await db.from("cart_submissions").insert(submission);
 
@@ -86,6 +100,14 @@ export async function POST(request: Request) {
   if(error?.code==="23514"&&error.message.toLowerCase().includes("delivery_city")){
     console.warn("Apply migration 20260805120000_delivery_all_morocco.sql to remove the legacy delivery-city constraint.");
     const retry=await db.from("cart_submissions").insert({...submission,delivery_city:"Casablanca",delivery_address:{zone:DELIVERY_ZONE}});
+    error=retry.error;
+  }
+
+  // Remain compatible with databases that have not applied the rate-limit migration yet.
+  if(error?.code==="42703"&&error.message.toLowerCase().includes("client_fingerprint")){
+    console.warn("Apply migration 20260807140000_cart_submission_rate_limit.sql to enable rate limiting.");
+    const {client_fingerprint,...withoutFingerprint}=submission;
+    const retry=await db.from("cart_submissions").insert(withoutFingerprint);
     error=retry.error;
   }
 
