@@ -10,4 +10,4 @@ coverage
 .vercel
 supabase/.temp/
 .catalogue-import/
-test
+
