@@ -17,7 +17,7 @@ export function HomeVideoHero() {
   }, []);
 
   return (
-    <section className="homepage-video-hero relative min-h-[100svh] overflow-hidden bg-[#05090d]">
+    <section className="homepage-video-hero relative min-h-[100svh] overflow-hidden bg-[var(--dn-bg)]">
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${poster})` }}

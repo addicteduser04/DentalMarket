@@ -36,7 +36,7 @@ export function AccountNav({isAdmin}:{isAdmin:boolean}) {
       <button onClick={()=>setOpen(!open)} aria-expanded={open} className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[.06] px-4 py-4 font-bold">
         <span className="flex items-center gap-2"><Settings size={18}/>{current}</span><ChevronDown className={`transition ${open?"rotate-180":""}`} size={18}/>
       </button>
-      {open&&<nav className="absolute left-0 right-0 top-[calc(100%+.5rem)] z-40 grid gap-1 rounded-2xl border border-white/10 bg-[#0b1219] p-3 shadow-2xl">{navigation}</nav>}
+      {open&&<nav className="absolute left-0 right-0 top-[calc(100%+.5rem)] z-40 grid gap-1 rounded-2xl border border-white/10 bg-[var(--dn-surface-raised-solid)] p-3 shadow-2xl">{navigation}</nav>}
     </div>
   </>;
 }

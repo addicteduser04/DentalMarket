@@ -5,6 +5,7 @@ import "./globals.css";
 import { Header } from "@/components/storefront/header";
 import { Footer } from "@/components/storefront/footer";
 import { CampaignCapture } from "@/components/storefront/campaign-capture";
+import { WhatsAppFloatButton } from "@/components/whatsapp-float-button";
 import {getLocale} from "@/lib/i18n-server";
 export const metadata:Metadata={
   metadataBase:new URL("https://dental-market-bay.vercel.app"),
@@ -18,4 +19,5 @@ export const metadata:Metadata={
     images:[{url:"/opengraph-image.png",width:1200,height:630,alt:"DENTANOVA"}],
   },
 };
-export default function RootLayout({children}:{children:React.ReactNode}){const locale=getLocale();return <html lang={locale} dir={locale==="ar"?"rtl":"ltr"}><body><Suspense><CampaignCapture/></Suspense><Header locale={locale}/><main className="min-h-[70vh]">{children}</main><Footer/><Analytics/></body></html>}
+const THEME_SCRIPT = `(function(){try{var t=localStorage.getItem("dn-theme");document.documentElement.setAttribute("data-theme",t==="light"?"light":"dark");}catch(e){document.documentElement.setAttribute("data-theme","dark");}})();`;
+export default function RootLayout({children}:{children:React.ReactNode}){const locale=getLocale();return <html lang={locale} dir={locale==="ar"?"rtl":"ltr"} suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:THEME_SCRIPT}}/></head><body><Suspense><CampaignCapture/></Suspense><Header locale={locale}/><main className="min-h-[70vh]">{children}</main><Footer/><WhatsAppFloatButton/><Analytics/></body></html>}
