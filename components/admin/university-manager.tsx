@@ -17,15 +17,17 @@ export function UniversityManager({initial,locale="fr"}:{initial:University[];lo
     <div className="mb-5 flex justify-between"><div><p className="eyebrow">{t("studentPacks")}</p><h1 className="display mt-2 text-4xl">{t("universities")}</h1></div>
       <button className="button" onClick={()=>setRows([...rows,{id:crypto.randomUUID(),name:"",acronym:"",city:"",slug:"",display_order:rows.length,is_active:false}])}>{t("add")}</button>
     </div>
-    <div className="grid gap-3">{rows.map((row,index)=><div className="card grid gap-3 p-4 md:grid-cols-6" key={row.id}>
-      <input aria-label={t("fullName")} placeholder={t("fullName")} value={row.name} onChange={e=>change(index,{name:e.target.value})}/>
-      <input aria-label={t("acronym")} placeholder={t("acronym")} value={row.acronym} onChange={e=>change(index,{acronym:e.target.value})}/>
-      <input aria-label={t("city")} placeholder={t("city")} value={row.city} onChange={e=>change(index,{city:e.target.value})}/>
-      <input aria-label={t("slug")} placeholder={t("slug")} value={row.slug} onChange={e=>change(index,{slug:e.target.value})}/>
-      <input className="md:col-span-2" aria-label={t("logoUrl")} placeholder={t("logoUrl")} value={row.image_url||""} onChange={e=>change(index,{image_url:e.target.value})}/>
-      <textarea className="md:col-span-3" aria-label={t("description")} placeholder={t("description")} value={row.description||""} onChange={e=>change(index,{description:e.target.value})}/>
-      <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={row.is_active} onChange={e=>change(index,{is_active:e.target.checked})}/>{t("active")}</label>
-      <button className="account-button-secondary" onClick={()=>save(row)}>{t("save")}</button>
+    <div className="grid gap-5">{rows.map((row,index)=><div className="card grid gap-4 p-5 md:grid-cols-3" key={row.id}>
+      <label className="admin-field">{t("fullName")}<input value={row.name} onChange={e=>change(index,{name:e.target.value})}/></label>
+      <label className="admin-field">{t("acronym")}<input value={row.acronym} onChange={e=>change(index,{acronym:e.target.value})}/></label>
+      <label className="admin-field">{t("city")}<input value={row.city} onChange={e=>change(index,{city:e.target.value})}/></label>
+      <label className="admin-field">{t("slug")}<input value={row.slug} onChange={e=>change(index,{slug:e.target.value})}/></label>
+      <label className="admin-field md:col-span-2">{t("logoUrl")}<input value={row.image_url||""} onChange={e=>change(index,{image_url:e.target.value})}/></label>
+      <label className="admin-field md:col-span-3">{t("description")}<textarea rows={2} value={row.description||""} onChange={e=>change(index,{description:e.target.value})}/></label>
+      <div className="flex items-center justify-between border-t border-white/10 pt-4 md:col-span-3">
+        <label className="admin-check"><input type="checkbox" checked={row.is_active} onChange={e=>change(index,{is_active:e.target.checked})}/>{t("active")}</label>
+        <button className="account-button-secondary" onClick={()=>save(row)}>{t("save")}</button>
+      </div>
     </div>)}</div>
     {message&&<p className="mt-4 text-sm text-cyan-300">{message}</p>}
   </div>;
