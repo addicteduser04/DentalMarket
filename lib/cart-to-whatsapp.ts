@@ -41,3 +41,20 @@ export function buildWhatsAppMessage(items: WhatsAppMessageItem[], customerName?
 export function redirectToWhatsApp(items: WhatsAppItem[], customerName?: string) {
   window.location.href = createWhatsAppUrl(buildWhatsAppMessage(items, customerName));
 }
+
+export function beginWhatsAppHandoff(
+  items: WhatsAppItem[],
+  startLogging: () => unknown,
+  clearCart: () => void,
+  navigate: (destination: string) => void,
+  customerName?: string,
+) {
+  const destination = createWhatsAppUrl(buildWhatsAppMessage(items, customerName));
+  try {
+    void Promise.resolve(startLogging()).catch(() => undefined);
+  } catch {
+    // Analytics must never affect the customer handoff.
+  }
+  clearCart();
+  navigate(destination);
+}

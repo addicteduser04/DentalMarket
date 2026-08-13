@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildWhatsAppMessage } from "./cart-to-whatsapp";
+import { beginWhatsAppHandoff, buildWhatsAppMessage } from "./cart-to-whatsapp";
 import { BUSINESS_WHATSAPP_DIGITS, createWhatsAppUrl, normalizeWhatsAppDigits } from "./whatsapp";
 describe("buildWhatsAppMessage", () => {
   it("formats multiple lines, variations, quantities, total, customer and Morocco-wide delivery", () => {
@@ -44,5 +44,28 @@ describe("buildWhatsAppMessage", () => {
       if (previous === undefined) delete process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
       else process.env.NEXT_PUBLIC_WHATSAPP_NUMBER = previous;
     }
+  });
+});
+
+describe("beginWhatsAppHandoff", () => {
+  const items = [{name:"Sonde",itemType:"product" as const,quantity:1,price:35}];
+
+  it.each([
+    ["successful analytics",()=>Promise.resolve()],
+    ["failed analytics",()=>Promise.reject(new Error("insert failed"))],
+    ["unavailable analytics",()=>{throw new Error("unavailable")}],
+  ])("opens WhatsApp without customer-facing failure when %s",(_scenario,startLogging)=>{
+    let cleared=false;
+    let destination="";
+    beginWhatsAppHandoff(items,startLogging,()=>{cleared=true},url=>{destination=url});
+    expect(cleared).toBe(true);
+    expect(destination).toContain("https://wa.me/212612133240?text=");
+    expect(decodeURIComponent(destination)).toContain("Sonde x1");
+  });
+
+  it("preserves the existing authenticated customer-name behavior",()=>{
+    let destination="";
+    beginWhatsAppHandoff(items,()=>Promise.resolve(),()=>undefined,url=>{destination=url},"Sara");
+    expect(decodeURIComponent(destination)).toContain("Client : Sara");
   });
 });

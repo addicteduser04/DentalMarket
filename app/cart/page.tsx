@@ -2,56 +2,58 @@
 
 import {ProductImage} from "@/components/storefront/product-image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Minus, Plus, ShieldCheck, Trash2 } from "lucide-react";
 import { useCart } from "@/lib/cart-store";
 import { money } from "@/lib/utils";
-import { buildWhatsAppMessage } from "@/lib/cart-to-whatsapp";
-import { createWhatsAppUrl, DELIVERY_ZONE } from "@/lib/whatsapp";
+import { beginWhatsAppHandoff } from "@/lib/cart-to-whatsapp";
+import { logCartSubmission } from "@/lib/cart-submission-analytics";
+import { DELIVERY_ZONE } from "@/lib/whatsapp";
 import { EmptyState } from "@/components/ui/empty-state";
+import {createClient,hasSupabaseEnv} from "@/lib/supabase/client";
 
 export default function CartPage() {
   const { items, remove, setQuantity, clear } = useCart();
   const [deliveryAccepted, setDeliveryAccepted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [customer,setCustomer]=useState<{id:string|null;name?:string}>({id:null});
   const total = items.reduce((sum,item) => sum + item.price * item.quantity, 0);
 
-  async function submit() {
+  useEffect(()=>{
+    if(!hasSupabaseEnv)return;
+    const db=createClient();
+    void db.auth.getUser().then(({data:{user}})=>setCustomer({
+      id:user?.id??null,
+      name:typeof user?.user_metadata?.full_name==="string"?user.user_metadata.full_name:undefined,
+    })).catch(()=>undefined);
+  },[]);
+
+  function submit() {
     if (!items.length || !deliveryAccepted || submitting) return;
     setSubmitting(true);
-    setError("");
-
-    try {
-      const response = await fetch("/api/cart-submissions", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          deliveryAccepted,
-          deliveryZone: DELIVERY_ZONE,
-          campaignSlug: localStorage.getItem("active_campaign_slug"),
-          items: items.map(item => ({
-            item_type:item.itemType,
-            product_id:item.productId,
-            pack_id:item.packId,
-            name: item.name,
-            variation_label: item.variationLabel,
-            qty: item.quantity,
-            price: item.price,
-            optional_component_ids:item.optionalComponentIds,
-          })),
-        }),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Impossible de préparer la demande.");
-
-      const destination = createWhatsAppUrl(buildWhatsAppMessage(result.items));
-      clear();
-      window.location.assign(destination);
-    } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Impossible de préparer la demande.");
-      setSubmitting(false);
-    }
+    beginWhatsAppHandoff(items,()=>logCartSubmission({
+        items: items.map(item => ({
+          item_type:item.itemType,
+          product_id:item.productId,
+          pack_id:item.packId,
+          name:item.name,
+          variation_id:item.variationId,
+          variation_sku:item.variationSku,
+          variation_label:item.variationLabel,
+          qty:item.quantity,
+          price:item.price,
+          university:item.university,
+          academic_year:item.academicYear,
+          academic_session:item.academicSession,
+          pack_code:item.packCode,
+          component_summary:item.componentSummary,
+          optional_component_ids:item.optionalComponentIds,
+          optional_component_summary:item.optionalComponentSummary,
+        })),
+        estimated_total:total,
+        user_id:customer.id,
+        campaign_slug:localStorage.getItem("active_campaign_slug"),
+      }),clear,destination=>window.location.assign(destination),customer.name);
   }
 
   if (!items.length) {
@@ -99,7 +101,6 @@ export default function CartPage() {
         <button onClick={submit} disabled={!deliveryAccepted || submitting} className="button w-full !bg-[#1f9d55] disabled:cursor-not-allowed disabled:opacity-45">
           {submitting ? "Préparation…" : "Confirmer sur WhatsApp"}
         </button>
-        {error && <p role="alert" className="status-error mt-4 rounded-xl p-3 text-sm">{error}</p>}
         <p className="mt-4 flex gap-2 text-xs leading-5 text-white/45"><ShieldCheck size={28}/> Aucun paiement en ligne. Vous finalisez les détails directement avec notre conseiller.</p>
       </aside>
     </div>

@@ -179,10 +179,10 @@ export function redirectToWhatsApp(items: CartItem[], customerName?: string) {
 }
 ```
 
-The `/cart` confirmation first validates the Casablanca-only delivery rule
-through `/api/cart-submissions`, records the analytics submission, and only
-then starts the WhatsApp handoff. Errors remain visible and the cart is not
-cleared before the handoff is ready.
+The `/cart` confirmation constructs the WhatsApp handoff first, starts a
+best-effort analytics insert directly through the browser Supabase client,
+and immediately opens WhatsApp without awaiting analytics. Analytics errors
+never block the customer flow.
 
 ---
 
