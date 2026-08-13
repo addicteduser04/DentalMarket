@@ -104,7 +104,7 @@ export async function POST(request: Request) {
   }
 
   // Remain compatible with databases that have not applied the rate-limit migration yet.
-  if(error?.code==="42703"&&error.message.toLowerCase().includes("client_fingerprint")){
+  if(["42703","PGRST204"].includes(error?.code||"")&&error?.message.toLowerCase().includes("client_fingerprint")){
     console.warn("Apply migration 20260807140000_cart_submission_rate_limit.sql to enable rate limiting.");
     const {client_fingerprint,...withoutFingerprint}=submission;
     const retry=await db.from("cart_submissions").insert(withoutFingerprint);
