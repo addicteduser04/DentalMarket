@@ -9,6 +9,7 @@ import {translate} from "@/lib/i18n";
 import {HomeVideoHero} from "@/components/storefront/home-video-hero";
 import {ProductRow} from "@/components/storefront/product-row";
 import {StudentPackCard} from "@/components/storefront/student-pack-card";
+import {CampaignBanner} from "@/components/storefront/campaign-banner";
 
 const categoryVisuals=["/visuals/category-instruments.webp","/visuals/category-equipment.webp","/visuals/category-restorative.webp","/visuals/category-orthodontics.webp"];
 
@@ -20,7 +21,7 @@ export default async function Home(){
   const campaign=campaigns[0];
   const benefits:Array<[LucideIcon,string]>=[[MapPin,t("casablancaDelivery")],[Headphones,t("expertAdvice")],[MessageCircle,t("whatsappOrdering")],[ShieldCheck,t("verifiedCatalogue")]];
   return <div className="home-cinematic bg-[var(--dn-page-alt)] text-white">
-    <HomeVideoHero/>
+    <HomeVideoHero locale={locale}/>
     <section className="border-y border-white/10 bg-[var(--dn-section-tint)]">
       <div className="container-shell grid grid-cols-2 gap-px py-1 md:grid-cols-4">
         {benefits.map(([Icon,label])=><div className="flex items-center gap-3 px-3 py-5 text-sm font-bold text-white/70" key={label}><Icon className="shrink-0 text-cyan-300" size={20}/><span>{label}</span></div>)}
@@ -45,7 +46,7 @@ export default async function Home(){
     <ProductRow titleKey="instruments" subtitleKey="instrumentsSubtitle" products={rows.instruments} offers={offers} href="/search?q=instruments" locale={locale}/>
     {rows.categoryRows.map(row=><ProductRow key={row.category.id} title={row.category.name} products={row.products} offers={offers} href={`/category/${row.category.slug}`} locale={locale}/>)}
 
-    {campaign&&<section className="py-12"><div className="container-shell"><Link href={campaign.banner_link||"/search"} className="group flex flex-col justify-between gap-6 overflow-hidden rounded-3xl border border-cyan-300/20 bg-gradient-to-r from-cyan-500/15 to-blue-600/15 px-7 py-8 sm:flex-row sm:items-center"><div><p className="eyebrow">{t("offersToday")}</p><h2 className="display mt-2 text-3xl">{campaign.name}</h2></div><DirectionalArrow className="text-cyan-300 transition group-hover:translate-x-1"/></Link></div></section>}
+    {campaign?<CampaignBanner campaign={campaign}/>:null}
 
     <section className="pb-24 pt-14"><div className="container-shell"><div className="relative overflow-hidden rounded-[2rem] border border-cyan-300/20 bg-[radial-gradient(circle_at_80%_20%,rgba(55,171,255,.24),transparent_35%),linear-gradient(135deg,#0d1922,#081018)] px-7 py-12 text-[#f4f8fb] md:px-14 md:py-16"><Sparkles className="text-[#68ddfb]"/><h2 className="display mt-5 max-w-3xl text-4xl md:text-6xl">{t("finalStudentCta")}</h2><p className="mt-5 max-w-2xl text-[rgba(244,248,251,.6)]">{t("finalStudentCtaBody")}</p><Link href="/student-packs" className="button mt-8">{t("discoverPacks")}<DirectionalArrow size={18}/></Link></div></div></section>
 

@@ -29,5 +29,6 @@ export type Offer = {
   id: string; name: string; badge_text: string | null; discount_type: "percentage" | "fixed";
   discount_value: number; scope: "all" | "category" | "product"; category_id: string | null;
   product_id: string | null; starts_at: string; ends_at: string | null; is_active: boolean;
+  created_at?: string;
 };
-export type Campaign = { id: string; name: string; slug: string; banner_image_url: string | null; banner_link: string | null; offer_id: string | null; starts_at: string; ends_at: string | null; is_active: boolean };
+export type Campaign = { id: string; name: string; slug: string; banner_image_url: string | null; banner_link: string | null; offer_id: string | null; starts_at: string; ends_at: string | null; is_active: boolean; created_at?:string };

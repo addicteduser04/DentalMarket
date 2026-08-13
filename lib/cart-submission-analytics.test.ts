@@ -6,6 +6,7 @@ const payload:CartSubmissionPayload={
   estimated_total:70,
   user_id:null,
   campaign_slug:"rentree-2026",
+  delivery_city:"Casablanca",
 };
 
 describe("logCartSubmission",()=>{

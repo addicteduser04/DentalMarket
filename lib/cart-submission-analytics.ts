@@ -23,6 +23,7 @@ export type CartSubmissionPayload = {
   estimated_total: number;
   user_id: string | null;
   campaign_slug: string | null;
+  delivery_city: string;
 };
 
 /** Analytics is best-effort and must never block the WhatsApp handoff. */

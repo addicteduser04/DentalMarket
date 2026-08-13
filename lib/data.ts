@@ -11,7 +11,7 @@ export async function getCatalog() {
     db.from("products").select("*, categories(*)").eq("is_active",true).order("created_at",{ascending:false}),
     db.from("categories").select("*").order("display_order"),
     db.from("offers").select("*").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`),
-    db.from("campaigns").select("*").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`).limit(1)
+    db.from("campaigns").select("*").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`).order("created_at",{ascending:false}).limit(1)
   ]);
   const available = !p.error && !c.error && !o.error && !ca.error;
   return {
@@ -32,7 +32,7 @@ export async function getHomepageData(){
     db.from("products").select(homepageProductFields).eq("is_active",true).eq("publication_status","published").eq("catalog_visible",true).order("created_at",{ascending:false}).limit(96),
     db.from("categories").select("id,name,slug,parent_id,display_order").order("display_order"),
     db.from("offers").select("*").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`),
-    db.from("campaigns").select("*").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`).limit(1),
+    db.from("campaigns").select("*").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`).order("created_at",{ascending:false}).limit(1),
     db.from("student_packs").select("*,universities(*),academic_years(*)").eq("publication_status","published").order("display_order").limit(6),
     db.from("universities").select("*").eq("is_active",true).order("display_order"),
     db.from("student_recommended_products").select("id,product_id,university_id,academic_year_id,display_order,is_active").eq("is_active",true),

@@ -22,9 +22,10 @@ export function selectHomepageRows(products:Product[],categories:Category[],offe
     return selected;
   };
   const published=products.filter(product=>product.is_active&&product.publication_status!=="draft"&&product.publication_status!=="archived");
-  const offerProducts=take(published.filter(product=>hasActivePromotion(product,offers)));
-  const featured=take(published.filter(product=>product.is_featured));
-  const newArrivals=take([...published].sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||""))));
+  const offerProducts=published.filter(product=>hasActivePromotion(product,offers)).slice(0,limit);
+  const featured=published.filter(product=>product.is_featured).slice(0,limit);
+  const newArrivals=[...published].sort((a,b)=>String(b.created_at||"").localeCompare(String(a.created_at||""))||a.name.localeCompare(b.name,"fr")||a.id.localeCompare(b.id)).slice(0,limit);
+  [...offerProducts,...featured,...newArrivals].forEach(product=>used.add(product.id));
   const studentSet=new Set(studentProductIds);
   const studentEssentials=take(published.filter(product=>studentSet.has(product.id)||product.target_audience==="student"));
   const instrumentCategory=categories.find(category=>/instrument/i.test(`${category.name} ${category.slug}`));

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { resolveProductDisplayPrices } from "./storefront-pricing";
 import type { Product } from "./types";
+import type { Offer } from "./types";
 
 function product(overrides: Partial<Product> = {}): Product {
   return {
@@ -37,5 +38,12 @@ describe("resolveProductDisplayPrices", () => {
     expect(result.currentDisplayedPrice).toBe(650);
     expect(result.crossedOutPrice).toBeNull();
     expect(result.showCrossedOutPrice).toBe(false);
+  });
+
+  it("does not stack a table offer on an active product promotion", () => {
+    const offer:Offer={id:"o1",name:"Offre",badge_text:null,discount_type:"percentage",discount_value:50,scope:"all",category_id:null,product_id:null,starts_at:"2026-01-01",ends_at:null,is_active:true};
+    const result = resolveProductDisplayPrices(product({ promotional_price: 590 }), offer);
+    expect(result.currentDisplayedPrice).toBe(590);
+    expect(result.crossedOutPrice).toBe(650);
   });
 });

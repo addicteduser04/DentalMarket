@@ -1,31 +1,26 @@
-import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { money } from "@/lib/utils";
-import type { Product } from "@/lib/types";
-import type { SaleItemRecord, SaleRecord } from "@/lib/sales";
+import {createClient} from "@/lib/supabase/server";
+import {buildDashboardState,type DashboardSubmission} from "@/lib/admin-dashboard";
+import {money} from "@/lib/utils";
 
 export default async function AdminHome(){
-  const db=createClient(),now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()),month=new Date(now.getFullYear(),now.getMonth(),1);
-  const [{data:salesData},{data:itemsData},{data:productsData}]=await Promise.all([
-    db.from("sales").select("id,sale_at,total_amount,balance_due,delivery_status,sale_status").gte("sale_at",month.toISOString()),
-    db.from("sale_items").select("product_id,product_name,quantity,sale:sales!inner(sale_status,sale_at)").gte("sale.sale_at",month.toISOString()).eq("sale.sale_status","confirmed"),
-    db.from("products").select("id,name,sku,stock_tracking,stock_quantity,low_stock_threshold,variations,publication_status").neq("publication_status","archived"),
+  const db=createClient(),now=new Date(),nowIso=now.toISOString(),thirtyDaysAgo=new Date(now.getTime()-30*24*60*60*1000).toISOString();
+  const [submissions,stock,offers,campaigns]=await Promise.all([
+    db.from("cart_submissions").select("created_at,estimated_total,campaign_slug,items").gte("created_at",thirtyDaysAgo).lte("created_at",nowIso),
+    db.from("products").select("id",{count:"exact",head:true}).neq("stock_status","in_stock"),
+    db.from("offers").select("id",{count:"exact",head:true}).eq("is_active",true).lte("starts_at",nowIso).or(`ends_at.is.null,ends_at.gte.${nowIso}`),
+    db.from("campaigns").select("id",{count:"exact",head:true}).eq("is_active",true).lte("starts_at",nowIso).or(`ends_at.is.null,ends_at.gte.${nowIso}`),
   ]);
-  const sales=(salesData||[]) as unknown as SaleRecord[],items=(itemsData||[]) as unknown as (SaleItemRecord&{sale:{sale_status:string;sale_at:string}})[],products=(productsData||[]) as unknown as Product[];
-  const commercial=sales.filter(sale=>sale.sale_status==="confirmed");
-  const todaySales=commercial.filter(sale=>new Date(sale.sale_at)>=today);
-  const revenue=commercial.reduce((sum,sale)=>sum+Number(sale.total_amount),0);
-  const outstanding=commercial.reduce((sum,sale)=>sum+Number(sale.balance_due),0);
-  const awaiting=commercial.filter(sale=>!["delivered","cancelled"].includes(sale.delivery_status)).length;
-  const sold=new Map<string,{name:string;quantity:number}>();
-  items.forEach(item=>{const key=item.product_id||item.product_name,current=sold.get(key)||{name:item.product_name,quantity:0};current.quantity+=Number(item.quantity);sold.set(key,current)});
-  const lowStock=products.filter(product=>product.stock_tracking&&Number(product.stock_quantity||0)<=Number(product.low_stock_threshold||0));
+  const state=buildDashboardState({submissions:{data:(submissions.data??[]) as DashboardSubmission[],error:submissions.error},stock:{count:stock.count,error:stock.error},offers:{count:offers.count,error:offers.error},campaigns:{count:campaigns.count,error:campaigns.error}},now);
+  if(!state.ok){console.error("Admin dashboard query failed",state.failed);return <><p className="eyebrow">Pilotage DENTANOVA</p><h1 className="display mt-2 text-4xl">Santé commerciale</h1><div className="card mt-7 border border-red-300/20 p-7"><h2 className="text-lg font-bold text-red-200">Données temporairement indisponibles</h2><p className="mt-2 text-sm text-white/55">Impossible de charger les indicateurs sans risque d’afficher des valeurs incorrectes. Réessayez dans quelques instants.</p></div></>}
+  const metrics=state.metrics;
   return <>
-    <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="eyebrow">Pilotage DENTANOVA</p><h1 className="display mt-2 text-4xl">Vue d’ensemble</h1></div><Link href="/admin/sales/new" className="account-button">Enregistrer une vente</Link></div>
-    <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-5"><Metric label="Ventes aujourd’hui" value={todaySales.length}/><Metric label="Ventes ce mois" value={commercial.length}/><Metric label="Revenu ce mois" value={money(revenue)}/><Metric label="Solde à recevoir" value={money(outstanding)}/><Metric label="À livrer" value={awaiting}/></div>
-    <div className="mt-5 grid gap-5 xl:grid-cols-2">
-      <section className="card p-6"><h2 className="display text-2xl">Produits les plus vendus</h2><div className="mt-4 grid gap-2">{[...sold.values()].sort((a,b)=>b.quantity-a.quantity).slice(0,10).map((entry,index)=><div className="flex justify-between border-b border-white/10 py-2 text-sm" key={entry.name}><span>{index+1}. {entry.name}</span><b>{entry.quantity}</b></div>)}{!sold.size&&<p className="py-5 text-sm text-white/45">Les ventes confirmées apparaîtront ici.</p>}</div></section>
-      <section className="card p-6"><div className="flex items-center justify-between"><h2 className="display text-2xl">Stock faible</h2><Link href="/admin/products?stock=in_stock" className="text-sm font-bold text-cyan-300">Gérer le stock</Link></div><div className="mt-4 grid gap-2">{lowStock.slice(0,10).map(product=><div className="flex justify-between border-b border-white/10 py-2 text-sm" key={product.id}><span>{product.name}{product.sku&&<small className="ml-2 text-white/35">{product.sku}</small>}</span><b className="text-amber-300">{product.stock_quantity||0}</b></div>)}{!lowStock.length&&<p className="py-5 text-sm text-white/45">Aucun produit suivi sous son seuil d’alerte.</p>}</div></section>
+    <div><p className="eyebrow">Pilotage DENTANOVA</p><h1 className="display mt-2 text-4xl">Santé commerciale</h1><p className="mt-3 text-sm text-white/45">Demandes panier transmises vers WhatsApp — valeurs estimées, hors paiements confirmés.</p></div>
+    <section className="mt-7"><h2 className="display text-2xl">7 derniers jours</h2><div className="mt-4 grid gap-4 sm:grid-cols-2"><Metric label="Demandes WhatsApp" value={metrics.sevenDays.count}/><Metric label="Total estimé" value={money(metrics.sevenDays.total)}/></div></section>
+    <section className="mt-7"><h2 className="display text-2xl">30 derniers jours</h2><div className="mt-4 grid gap-4 sm:grid-cols-2"><Metric label="Demandes WhatsApp" value={metrics.thirtyDays.count}/><Metric label="Total estimé" value={money(metrics.thirtyDays.total)}/></div></section>
+    <section className="mt-7"><h2 className="display text-2xl">Santé du catalogue</h2><div className="mt-4 grid gap-4 sm:grid-cols-3"><Metric label={'Produits hors "in_stock"'} value={metrics.nonInStockProducts}/><Metric label="Offres actuellement actives" value={metrics.activeOffers}/><Metric label="Campagnes actuellement actives" value={metrics.activeCampaigns}/></div></section>
+    <div className="mt-7 grid gap-5 xl:grid-cols-2">
+      <section className="card p-6"><h2 className="display text-2xl">Top 10 produits — 30 jours</h2><p className="mt-2 text-xs text-white/40">Fréquence d’apparition dans les paniers transmis, indépendamment de la quantité.</p><div className="mt-4 overflow-x-auto"><table className="w-full text-left text-sm"><thead className="text-xs uppercase text-white/40"><tr><th className="py-2">Produit</th><th className="text-right">Fréquence</th></tr></thead><tbody>{metrics.topProducts.map((product,index)=><tr className="border-t border-white/10" key={product.id}><td className="py-3">{index+1}. {product.name}</td><td className="text-right font-bold">{product.frequency}</td></tr>)}</tbody></table>{!metrics.topProducts.length?<p className="py-6 text-sm text-white/45">Aucun produit soumis sur cette période.</p>:null}</div></section>
+      <section className="card p-6"><h2 className="display text-2xl">Attribution campagnes — 30 jours</h2><div className="mt-4 overflow-x-auto"><table className="w-full text-left text-sm"><thead className="text-xs uppercase text-white/40"><tr><th className="py-2">Campagne</th><th className="text-right">Demandes</th><th className="text-right">Total estimé</th></tr></thead><tbody>{metrics.campaigns.map(row=><tr className="border-t border-white/10" key={row.slug??"sans-campagne"}><td className="py-3">{row.slug??"Sans campagne"}</td><td className="text-right font-bold">{row.count}</td><td className="text-right">{money(row.total)}</td></tr>)}</tbody></table>{!metrics.campaigns.length?<p className="py-6 text-sm text-white/45">Aucune demande sur cette période.</p>:null}</div></section>
     </div>
   </>
 }
