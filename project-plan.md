@@ -243,3 +243,4 @@ Steps 3–4 give you a demo-able product fastest — worth doing before the
 admin panel if you want something to show early. Offers and campaigns
 depend on products already existing, so they naturally come after basic
 product CRUD is solid.
+.
