@@ -33,6 +33,8 @@ const plainText = value => decode(value).replace(/<script[\s\S]*?<\/script>/gi,"
 const money = (minor, unit=2) => Number(minor) / 10 ** unit;
 const normalizeName = value => plainText(value).normalize("NFD").replace(/[\u0300-\u036f]/g,"")
   .toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const slugify = value => plainText(value).normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+  .toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 
 async function fetchJson(path) {
   const response = await fetch(`${API}${path}`, {
@@ -147,7 +149,7 @@ export async function buildStudentPackPayload() {
       university_source_id:String(universityCategory.id),
       academic_year_code:deriveAcademicYear(source.name),
       source_product_id:String(source.id), source_id:String(source.id),
-      import_key:`source:${source.id}`, name:plainText(source.name), slug:source.slug,
+      import_key:`source:${source.id}`, name:plainText(source.name), slug:slugify(source.name)||`pack-${source.id}`,
       short_description:plainText(source.short_description), description:plainText(source.description),
       image_url:source.images?.[0]?.src || "", gallery:(source.images||[]).map(image=>image.src),
       pack_code:`PACK-${source.id}`, source_url:source.permalink, academic_session:deriveSession(source.name),
