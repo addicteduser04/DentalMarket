@@ -8,7 +8,7 @@ export function ThemeToggle({className=""}:{className?:string}) {
   const [theme, setTheme] = useState<"dark"|"light">("dark");
 
   useEffect(() => {
-    setTheme(document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark");
+    queueMicrotask(()=>setTheme(document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark"));
   }, []);
 
   function toggle() {

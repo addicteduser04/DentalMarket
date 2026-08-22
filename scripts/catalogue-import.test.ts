@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 // The production importer is intentionally plain ESM so it runs without a TS loader.
-// @ts-expect-error Vitest resolves the adjacent ESM module at runtime.
 import { buildPayload, parseCsv } from "./catalogue-import.mjs";
 
 type ImportedVariation = {id:string;price:number};

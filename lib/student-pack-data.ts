@@ -1,5 +1,5 @@
 import {createClient,hasSupabaseEnv} from "./supabase/server";
-import type {AcademicYear,StudentPack,StudentRecommendation,University} from "./student-packs";
+import type {AcademicYear,PackComponent,StudentPack,StudentRecommendation,University} from "./student-packs";
 import {isPublicImageUrl,sanitizeProductImages} from "./image-url";
 
 const packSelect="*,universities(*),academic_years(*),student_pack_components(*,products(*,categories(*)))";
@@ -26,7 +26,18 @@ export async function getStudentPackCatalog(){
 
 export async function getStudentPack(slug:string){
   if(!hasSupabaseEnv)return null;
-  const {data,error}=await createClient().from("student_packs").select(packSelect).eq("slug",slug).maybeSingle();
+  const db=createClient();
+  const [{data,error},{data:packProducts,error:productError}]=await Promise.all([
+    db.from("student_packs").select(packSelect).eq("slug",slug).maybeSingle(),
+    db.rpc("get_public_student_pack_products",{v_pack_slug:slug}),
+  ]);
   if(error)throw new Error("Unable to load the published student pack");
-  return data?sanitizePack(data as unknown as StudentPack):null;
+  if(productError)throw new Error("Unable to resolve published student pack products");
+  if(!data)return null;
+  const productByComponent=new Map((packProducts||[]).map((row:{component_id:string;product:PackComponent["products"]})=>[row.component_id,row.product]));
+  const pack=data as unknown as StudentPack;
+  return sanitizePack({...pack,student_pack_components:(pack.student_pack_components||[]).map(component=>({
+    ...component,
+    products:(productByComponent.get(component.id)||component.products) as PackComponent["products"],
+  }))});
 }

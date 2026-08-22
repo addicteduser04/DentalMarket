@@ -224,7 +224,7 @@ tbody tr:hover { background:var(--dn-row-hover); }
 .category-card-shade { background:linear-gradient(to top,rgba(2,7,11,.97),rgba(2,7,11,.12) 68%); }
 .product-grid-on-dark .card { color:#17211d; }
 .market-row { border-top:1px solid rgba(255,255,255,.055); }
-.market-row-track { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(250px,280px); gap:1rem; overflow-x:auto; overscroll-behavior-inline:contain; scroll-snap-type:inline mandatory; padding:.15rem .1rem 1rem; scrollbar-width:thin; scrollbar-color:rgba(104,221,251,.35) transparent; }
+.market-row-track { display:grid; width:100%; min-width:0; max-width:100%; grid-auto-flow:column; grid-auto-columns:minmax(250px,280px); gap:1rem; overflow-x:auto; overscroll-behavior-inline:contain; scroll-snap-type:inline mandatory; padding:.15rem 0 1rem; scrollbar-width:thin; scrollbar-color:rgba(104,221,251,.35) transparent; }
 .market-row-item { min-width:0; scroll-snap-align:start; }
 .market-product-card { min-height:430px; }
 .category-market-grid .category-visual-card { min-height:320px; }

@@ -9,7 +9,7 @@ export function WhatsAppFloatButton() {
   const [dismissed, setDismissed] = useState(true);
 
   useEffect(() => {
-    try { setDismissed(sessionStorage.getItem(DISMISS_KEY) === "1"); } catch { setDismissed(false); }
+    queueMicrotask(()=>{try { setDismissed(sessionStorage.getItem(DISMISS_KEY) === "1"); } catch { setDismissed(false); }});
   }, []);
 
   if (dismissed) return null;

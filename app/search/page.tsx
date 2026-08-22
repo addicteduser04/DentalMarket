@@ -5,10 +5,10 @@ import { getCatalog } from "@/lib/data";
 import { EmptyState } from "@/components/ui/empty-state";
 import {getLocale} from "@/lib/i18n-server";
 
-export default async function SearchPage({searchParams}:{searchParams:{q?:string}}) {
-  const query=(searchParams.q||"").trim().toLowerCase();
+export default async function SearchPage({searchParams}:{searchParams:Promise<{q?:string}>}) {
+  const filters=await searchParams,query=(filters.q||"").trim().toLowerCase();
   const {products,categories,offers}=await getCatalog();
-  const locale=getLocale();
+  const locale=await getLocale();
   const foundCategories=query?categories.filter(category=>category.name.toLowerCase().includes(query)):[];
   const found=query?products.filter(product=>
     product.name.toLowerCase().includes(query) ||

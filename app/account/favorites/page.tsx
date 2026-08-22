@@ -5,7 +5,7 @@ import {requireAccount} from "@/lib/account-server";
 import {getLocale} from "@/lib/i18n-server";
 import {translate} from "@/lib/i18n";
 export default async function FavoritesPage(){
- const {db,isAdmin}=await requireAccount(),locale=getLocale(),t=(key:Parameters<typeof translate>[1])=>translate(locale,key);
+ const {db,isAdmin}=await requireAccount(),locale=await getLocale(),t=(key:Parameters<typeof translate>[1])=>translate(locale,key);
  const [{data},{data:packRows}]=await Promise.all([
   db.from("favorites").select("created_at,products(*,categories(name,slug))").order("created_at",{ascending:false}),
   db.from("student_pack_favorites").select("created_at,student_packs(*,universities(slug,acronym),academic_years(label_fr,label_ar))").order("created_at",{ascending:false}),

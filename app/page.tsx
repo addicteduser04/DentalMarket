@@ -15,7 +15,7 @@ const categoryVisuals=["/visuals/category-instruments.webp","/visuals/category-e
 
 export default async function Home(){
   const {products,categories,offers,campaigns,packs,universities,recommendations,available}=await getHomepageData();
-  const locale=getLocale(),t=(key:Parameters<typeof translate>[1])=>translate(locale,key),DirectionalArrow=locale==="ar"?ArrowLeft:ArrowRight;
+  const locale=await getLocale(),t=(key:Parameters<typeof translate>[1])=>translate(locale,key),DirectionalArrow=locale==="ar"?ArrowLeft:ArrowRight;
   const rows=selectHomepageRows(products,categories,offers,recommendations.map(item=>item.product_id));
   const featuredCategories=categories.filter(category=>products.some(product=>product.category_id===category.id)).slice(0,4);
   const campaign=campaigns[0];
@@ -31,7 +31,7 @@ export default async function Home(){
     <section className="marketplace-section py-16 md:py-24">
       <div className="container-shell">
         <div className="flex items-end justify-between gap-6"><div><p className="eyebrow">{t("studentPacks")}</p><h2 className="display mt-3 text-4xl md:text-6xl">{t("chooseUniversity")}</h2><p className="mt-4 max-w-2xl text-white/50">{t("packsIntro")}</p></div><Link href="/student-packs" className="hidden items-center gap-2 text-sm font-bold text-cyan-300 sm:flex">{t("viewAll")}<DirectionalArrow size={17}/></Link></div>
-        <div className="mt-8 flex gap-4 overflow-x-auto pb-3">{universities.map(university=><Link className="min-w-[220px] flex-1 rounded-2xl border border-white/10 bg-white/[.035] p-5 transition hover:border-cyan-300/30 hover:bg-white/[.06]" href={`/student-packs/${university.slug}`} key={university.id}><span className="text-2xl font-black">{university.acronym}</span><span className="mt-2 block text-sm text-white/45">{university.city}</span></Link>)}</div>
+        <div className="mt-8 flex w-full min-w-0 max-w-full gap-4 overflow-x-auto overscroll-x-contain pb-3">{universities.map(university=><Link className="min-w-[220px] flex-1 rounded-2xl border border-white/10 bg-white/[.035] p-5 transition hover:border-cyan-300/30 hover:bg-white/[.06]" href={`/student-packs/${university.slug}`} key={university.id}><span className="text-2xl font-black">{university.acronym}</span><span className="mt-2 block text-sm text-white/45">{university.city}</span></Link>)}</div>
         {packs.length>0&&<div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{packs.map(pack=><StudentPackCard pack={pack} locale={locale} key={pack.id}/>)}</div>}
       </div>
     </section>

@@ -2,6 +2,7 @@
 import { createHash } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { buildPayload as buildCataloguePayload } from "./catalogue-import.mjs";
+import { normalizeComponents } from "../lib/pack-component-identity.js";
 
 const API = "https://dentalmarket.ma/wp-json/wc/store/v1";
 const IMPORT_SOURCE = "dentalmarket-ma-student-packs";
@@ -190,6 +191,18 @@ async function main() {
   if (!url||!key) throw new Error("Supabase server environment is incomplete");
   const client=createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false}});
   const {review,...rpcPayload}=payload;
+  // Deduplicate components in each pack by logical identity before RPC
+  const dupErrors = [];
+  for(const pack of rpcPayload.packs){
+    const {normalized,conflicts} = normalizeComponents(pack.components||[]);
+    if(conflicts.length) dupErrors.push({pack:pack.slug||pack.source_id||null,conflicts});
+    pack.components = normalized;
+  }
+  if(dupErrors.length){
+    console.error('Importer payload contains conflicting duplicate components; aborting.');
+    console.error(JSON.stringify(dupErrors,null,2));
+    process.exitCode = 2; return;
+  }
   const {data,error}=await client.rpc("import_dentanova_student_packs",{payload:rpcPayload});
   if (error) throw new Error("Student pack import RPC failed; inspect secure server logs");
   console.log(JSON.stringify({mode:"applied",...summary,result:data},null,2));

@@ -52,4 +52,10 @@ export function packAvailability(pack:StudentPack) {
   return {status:"in_stock" as const,quantity:null};
 }
 
+export function packComponentAvailability(component:PackComponent) {
+  const product=component.products;
+  if(!product?.id)return "data_missing" as const;
+  return product.availability_status||product.stock_status||"out_of_stock";
+}
+
 export function packCartKey(packId:string){return `pack:${packId}`;}

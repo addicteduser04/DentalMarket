@@ -9,15 +9,16 @@ import type {Product} from "@/lib/types";
 import type {AcademicYear,PackComponent,StudentPack,University} from "@/lib/student-packs";
 import type {Locale} from "@/lib/i18n";
 import {translate} from "@/lib/i18n";
+import { normalizeComponents } from "@/lib/pack-component-identity.js";
 import {isPublicImageUrl} from "@/lib/image-url";
 import {validateProductImage} from "@/lib/product-validation";
 
-type DraftComponent=Partial<PackComponent>&{product_id:string;quantity:number;is_required:boolean;display_order:number};
+type DraftComponent=Partial<PackComponent>&{product_id:string;quantity:number;is_required:boolean;display_order:number;source_bundle_item_id?:string|null;source_metadata?:any;price_snapshot?:number|null};
 type Props={pack?:StudentPack;universities:University[];years:AcademicYear[];products:Product[];locale?:Locale};
 
 export function StudentPackForm({pack,universities,years,products,locale="fr"}:Props){
  const router=useRouter(),t=(key:Parameters<typeof translate>[1])=>translate(locale,key);
- const [dirty,setDirty]=useState(false),[message,setMessage]=useState(""),[uploading,setUploading]=useState(false);
+ const [dirty,setDirty]=useState(false),[message,setMessage]=useState(""),[uploading,setUploading]=useState(false),[saving,setSaving]=useState(false);
  const [imageUrl,setImageUrl]=useState(pack?.image_url||"");
  const [components,setComponents]=useState<DraftComponent[]>((pack?.student_pack_components||[]).map(item=>({...item})));
  useEffect(()=>{const warn=(event:BeforeUnloadEvent)=>{if(dirty)event.preventDefault()};window.addEventListener("beforeunload",warn);return()=>window.removeEventListener("beforeunload",warn)},[dirty]);
@@ -41,30 +42,40 @@ export function StudentPackForm({pack,universities,years,products,locale="fr"}:P
  }
 
  async function save(event:React.FormEvent<HTMLFormElement>){
-  event.preventDefault();const form=new FormData(event.currentTarget),status=String(form.get("publication_status"));
-  if(status==="published"&&(!components.length||!form.get("university_id")||!form.get("academic_year_id"))){setMessage(t("publicationInvalid"));return}
-  const payload={university_id:form.get("university_id"),academic_year_id:form.get("academic_year_id"),name:form.get("name"),slug:form.get("slug"),short_description:form.get("short_description"),description:form.get("description"),image_url:form.get("image_url")||null,pack_code:form.get("pack_code")||null,academic_session:form.get("academic_session")||null,manual_price:form.get("manual_price")===""?null:Number(form.get("manual_price")),component_total:total,promotional_price:form.get("promotional_price")===""?null:Number(form.get("promotional_price")),publication_status:status,is_featured:form.get("is_featured")==="on",availability_strategy:"manual",availability_override:"in_stock"};
-  const db=createClient(),response=pack?await db.from("student_packs").update(payload).eq("id",pack.id).select("id").single():await db.from("student_packs").insert(payload).select("id").single();
-  if(response.error){setMessage(t("savePackError"));return}
-  const id=response.data.id;await db.from("student_pack_components").delete().eq("pack_id",id);
-  const rows=components.map((component,index)=>({pack_id:id,product_id:component.product_id,variation_id:component.variation_id||null,quantity:component.quantity,is_required:component.is_required,display_order:index,notes:component.notes||null,replacement_policy:component.replacement_policy||"none"}));
-  const inserted=rows.length?await db.from("student_pack_components").insert(rows):{error:null};
-  if(inserted.error){setMessage(t("componentInvalid"));return}
-  setDirty(false);router.push(`/admin/student-packs/${id}`);router.refresh();setMessage(t("packSaved"));
+    event.preventDefault();const form=new FormData(event.currentTarget),status=String(form.get("publication_status"));
+    if(status==="published"&&(!components.length||!form.get("university_id")||!form.get("academic_year_id"))){setMessage(t("publicationInvalid"));return}
+    const payload={university_id:form.get("university_id"),academic_year_id:form.get("academic_year_id"),name:form.get("name"),slug:form.get("slug"),short_description:form.get("short_description"),description:form.get("description"),image_url:form.get("image_url")||null,pack_code:form.get("pack_code")||null,academic_session:form.get("academic_session")||null,manual_price:form.get("manual_price")===""?null:Number(form.get("manual_price")),component_total:total,promotional_price:form.get("promotional_price")===""?null:Number(form.get("promotional_price")),publication_status:status,is_featured:form.get("is_featured")==="on",availability_strategy:"manual",availability_override:"in_stock"};
+    const db=createClient();
+    setSaving(true);
+    try{
+        const rows=components.map((component,index)=>({product_id:component.product_id,variation_id:component.variation_id||null,quantity:component.quantity,is_required:component.is_required,display_order:index,notes:component.notes||null,replacement_policy:component.replacement_policy||"none",source_bundle_item_id:component.source_bundle_item_id||null,price_snapshot:component.price_snapshot||null,source_metadata:component.source_metadata||{}}));
+        const {normalized,conflicts} = normalizeComponents(rows as any);
+        if(conflicts.length){ setMessage(t("componentInvalid") + " — duplicate conflicts detected"); return }
+        const rpcRes = await db.rpc("save_student_pack",{v_pack:pack?.id||null,v_pack_data:payload,v_components:normalized});
+        if(rpcRes.error){
+            setMessage(rpcRes.error.message || t("componentInvalid"));
+            return;
+        }
+        const id=rpcRes.data as string;
+        setDirty(false);router.push(`/admin/student-packs/${id}`);router.refresh();setMessage(t("packSaved"));
+    } finally { setSaving(false) }
  }
  async function archive(){if(!pack||!confirm(t("archiveConfirm")))return;await createClient().from("student_packs").update({publication_status:"archived"}).eq("id",pack.id);router.push("/admin/student-packs");router.refresh()}
  async function duplicate(){
   if(!pack)return;const copy={university_id:pack.university_id,academic_year_id:pack.academic_year_id,name:`${pack.name} — ${t("duplicate")}`,slug:`${pack.slug}-copy-${Date.now().toString().slice(-5)}`,short_description:pack.short_description,description:pack.description,image_url:pack.image_url,gallery:pack.gallery,academic_session:pack.academic_session,manual_price:pack.manual_price,component_total:pack.component_total,publication_status:"draft",availability_strategy:"manual",availability_override:"in_stock",is_featured:false,display_order:pack.display_order};
-  const db=createClient(),{data}=await db.from("student_packs").insert(copy).select("id").single();if(!data)return;
-  if(components.length)await db.from("student_pack_components").insert(components.map((component,index)=>({pack_id:data.id,product_id:component.product_id,variation_id:component.variation_id||null,quantity:component.quantity,is_required:component.is_required,display_order:index,notes:component.notes||null,replacement_policy:component.replacement_policy||"none"})));
-  router.push(`/admin/student-packs/${data.id}`);
+    const rows = components.map((component,index)=>({product_id:component.product_id,variation_id:component.variation_id||null,quantity:component.quantity,is_required:component.is_required,display_order:index,notes:component.notes||null,replacement_policy:component.replacement_policy||"none",source_bundle_item_id:component.source_bundle_item_id||null,price_snapshot:component.price_snapshot||null,source_metadata:component.source_metadata||{}}));
+    const {normalized,conflicts} = normalizeComponents(rows as any);
+    if(conflicts.length){ setMessage(t("componentInvalid") + " — duplicate conflicts in source pack; copy aborted"); return }
+    const {data,error}=await createClient().rpc("save_student_pack",{v_pack:null,v_pack_data:copy,v_components:normalized});
+    if(error||!data){setMessage(error?.message||t("savePackError"));return}
+    router.push(`/admin/student-packs/${data}`);
  }
 
  const field=(name:string,label:string,value:unknown="",type="text",required=false)=><label className="admin-field">{label}<input required={required} min={type==="number"?0:undefined} step={type==="number"?".01":undefined} name={name} type={type} defaultValue={(value??"") as string|number}/></label>;
  const publicHref=pack?`/student-packs/${universities.find(item=>item.id===pack.university_id)?.slug}/${pack.slug}`:"";
  const previewImage=isPublicImageUrl(imageUrl)?imageUrl:null;
  return <div>
-  <header className="mb-7"><div className="text-xs text-white/40"><Link href="/admin">Administration</Link> <span>/</span> <Link href="/admin/student-packs">{t("studentPacks")}</Link> <span>/</span> <b className="text-white">{pack?.name||t("newPack")}</b></div><div className="mt-5 flex flex-col justify-between gap-5 xl:flex-row xl:items-end"><div><p className="eyebrow">{t("studentCatalogue")}</p><h1 className="display mt-1 text-3xl md:text-4xl">{pack?t("editPack"):t("newPack")}</h1><div className="mt-3 flex flex-wrap gap-2"><span className="account-badge">{t((pack?.publication_status||"draft") as "draft"|"published"|"archived")}</span><span className="status-success rounded-full px-3 py-1 text-xs font-bold"><CheckCircle2 className="mr-1 inline" size={13}/>{t("inStock")}</span>{pack?.pack_code&&<span className="text-xs text-white/40">{pack.pack_code}</span>}</div></div><div className="flex flex-wrap gap-2">{pack&&<><a target="_blank" rel="noreferrer" href={publicHref} className="account-button-secondary"><ExternalLink size={16}/>{t("publicPreview")}</a><button type="button" className="account-button-secondary" onClick={duplicate}><Copy size={16}/>{t("duplicate")}</button><button type="button" className="account-danger-button" onClick={archive}><Archive size={16}/>{t("archive")}</button></>}<button form="student-pack-editor" className="account-button"><Save size={17}/>{t("save")}</button></div></div></header>
+  <header className="mb-7"><div className="text-xs text-white/40"><Link href="/admin">Administration</Link> <span>/</span> <Link href="/admin/student-packs">{t("studentPacks")}</Link> <span>/</span> <b className="text-white">{pack?.name||t("newPack")}</b></div><div className="mt-5 flex flex-col justify-between gap-5 xl:flex-row xl:items-end"><div><p className="eyebrow">{t("studentCatalogue")}</p><h1 className="display mt-1 text-3xl md:text-4xl">{pack?t("editPack"):t("newPack")}</h1><div className="mt-3 flex flex-wrap gap-2"><span className="account-badge">{t((pack?.publication_status||"draft") as "draft"|"published"|"archived")}</span><span className="status-success rounded-full px-3 py-1 text-xs font-bold"><CheckCircle2 className="mr-1 inline" size={13}/>{t("inStock")}</span>{pack?.pack_code&&<span className="text-xs text-white/40">{pack.pack_code}</span>}</div></div><div className="flex flex-wrap gap-2">{pack&&<><a target="_blank" rel="noreferrer" href={publicHref} className="account-button-secondary"><ExternalLink size={16}/>{t("publicPreview")}</a><button type="button" className="account-button-secondary" onClick={duplicate} disabled={saving}><Copy size={16}/>{t("duplicate")}</button><button type="button" className="account-danger-button" onClick={archive}><Archive size={16}/>{t("archive")}</button></>}<button form="student-pack-editor" className="account-button" disabled={saving}><Save size={17}/>{t("save")}</button></div></div></header>
   <form id="student-pack-editor" onSubmit={save} onChange={()=>setDirty(true)} className="product-editor-layout">
    <div className="product-editor-main">
     <Section title="Informations générales"><div className="grid gap-4 md:grid-cols-2">{field("name",t("packName"),pack?.name,"text",true)}{field("slug",t("slug"),pack?.slug,"text",true)}<label className="admin-field">{t("university")}<select required name="university_id" defaultValue={pack?.university_id||""}><option value="">—</option>{universities.map(item=><option key={item.id} value={item.id}>{item.acronym} · {item.city}</option>)}</select></label><label className="admin-field">{t("year")}<select required name="academic_year_id" defaultValue={pack?.academic_year_id||""}><option value="">—</option>{years.map(item=><option key={item.id} value={item.id}>{locale==="ar"?item.label_ar:item.label_fr}</option>)}</select></label>{field("pack_code",t("packCode"),pack?.pack_code)}{field("academic_session",t("sourceSession"),pack?.academic_session)}</div><label className="admin-field mt-4">{t("summary")}<textarea name="short_description" rows={3} defaultValue={pack?.short_description||""}/></label><label className="admin-field mt-4">{t("description")}<textarea name="description" rows={7} defaultValue={pack?.description||""}/></label></Section>
@@ -79,7 +90,7 @@ export function StudentPackForm({pack,universities,years,products,locale="fr"}:P
    </aside>
   </form>
   {message&&<div role="status" className={`fixed bottom-5 right-5 z-50 max-w-sm rounded-2xl p-4 shadow-2xl ${message.includes("Impossible")?"status-error":"status-success"}`}>{message}</div>}
-  {dirty&&<div className="sticky bottom-4 z-30 mx-auto mt-6 flex max-w-md items-center justify-between rounded-full border border-amber-300/20 bg-[var(--dn-warning-surface)] px-5 py-3 text-sm shadow-2xl backdrop-blur"><span>Modifications non enregistrées</span><button form="student-pack-editor" className="font-bold text-cyan-300">{t("save")}</button></div>}
+    {dirty&&<div className="sticky bottom-4 z-30 mx-auto mt-6 flex max-w-md items-center justify-between rounded-full border border-amber-300/20 bg-[var(--dn-warning-surface)] px-5 py-3 text-sm shadow-2xl backdrop-blur"><span>Modifications non enregistrées</span><button form="student-pack-editor" className="font-bold text-cyan-300" disabled={saving}>{t("save")}</button></div>}
  </div>;
 }
 

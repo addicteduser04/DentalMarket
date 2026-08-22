@@ -16,6 +16,6 @@ export function createClient() {
   const store = cookies();
   const { url, key } = getSupabaseConfig();
   return createServerClient(url, key, {
-    cookies: { getAll: () => store.getAll(), setAll: (values: { name: string; value: string; options: CookieOptions }[]) => { try { values.forEach(({name,value,options}) => store.set(name,value,options)); } catch {} } }
+    cookies: { getAll: async () => (await store).getAll(), setAll: async (values: { name: string; value: string; options: CookieOptions }[]) => { try { const resolved=await store; values.forEach(({name,value,options}) => resolved.set(name,value,options)); } catch {} } }
   });
 }

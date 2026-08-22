@@ -10,4 +10,12 @@ coverage
 .vercel
 supabase/.temp/
 .catalogue-import/
-
+tmp/
+# One-off student-pack forensic helpers. Keep the maintained audit script.
+/scripts/check-import-runs.mjs
+/scripts/fetch-relations-by-id.mjs
+/scripts/find-zero-price.mjs
+/scripts/get-packs-info.mjs
+/scripts/inspect-relations.mjs
+/scripts/list-import-runs.mjs
+/scripts/tmp_find_pack_products.mjs

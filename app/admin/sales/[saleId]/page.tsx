@@ -6,10 +6,10 @@ import { deliveryStatusLabels,paymentMethodLabels,paymentStatusLabels,saleStatus
 import type { Product } from "@/lib/types";
 import { money } from "@/lib/utils";
 
-export default async function SalePage({params}:{params:{saleId:string}}){
-  const db=createClient();
+export default async function SalePage({params}:{params:Promise<{saleId:string}>}){
+  const db=createClient(),{saleId}=await params;
   const [{data:sale},{data:products}]=await Promise.all([
-    db.from("sales").select("*,sale_items(*),creator:profiles!sales_created_by_fkey(full_name)").eq("id",params.saleId).single(),
+    db.from("sales").select("*,sale_items(*),creator:profiles!sales_created_by_fkey(full_name)").eq("id",saleId).single(),
     db.from("products").select("id,name,sku,price,promotional_price,variations,stock_tracking,stock_quantity,publication_status").neq("publication_status","archived").order("name"),
   ]);
   if(!sale)notFound();

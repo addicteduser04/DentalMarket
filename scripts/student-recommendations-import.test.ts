@@ -1,6 +1,5 @@
 import {describe,expect,it} from "vitest";
 import {readFileSync} from "node:fs";
-// @ts-expect-error Vitest resolves the adjacent plain ESM production importer.
 import {buildPayload,parseSourcePage} from "./student-recommendations-import.mjs";
 const migration=readFileSync("supabase/migrations/20260729220000_student_recommended_products.sql","utf8");
 

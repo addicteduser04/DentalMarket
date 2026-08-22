@@ -1,5 +1,4 @@
 import {describe,expect,it} from "vitest";
-// @ts-expect-error Vitest resolves the adjacent plain ESM production importer.
 import {deriveAcademicYear,deriveSession} from "./student-packs-import.mjs";
 import {readFileSync} from "node:fs";
 const migration=readFileSync("supabase/migrations/20260729210000_student_packs.sql","utf8");
