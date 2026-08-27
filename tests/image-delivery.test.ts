@@ -16,7 +16,8 @@ describe("storefront image delivery",()=>{
   });
   it("limits catalogue cards per rendered page",()=>expect(readFileSync("app/search/page.tsx","utf8")).toContain("const PAGE_SIZE=24"));
   it("does not request unregistered variants and cannot retry beyond the placeholder",()=>{
-    expect(readFileSync("data/product-image-variants.json","utf8").trim()).toBe("{}");
+    const registry=JSON.parse(readFileSync("data/product-image-variants.json","utf8")) as Record<string,string[]>;
+    expect(Object.values(registry).every(variants=>variants.length>0&&variants.every(variant=>variant==="card"||variant==="detail"))).toBe(true);
     expect(image).toContain("Math.min(candidateIndex+1,candidates.length-1)");
   });
 });

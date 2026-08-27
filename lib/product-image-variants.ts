@@ -8,6 +8,7 @@ export const PRODUCT_IMAGE_VARIANTS={card:{width:480,quality:78},detail:{width:1
 const STORAGE_MARKER="/storage/v1/object/public/product-images/";
 
 type VariantRegistry=Record<string,Array<Exclude<ProductImageVariant,"original">>>;
+const verifiedVariantRegistry=variantRegistry as VariantRegistry;
 
 export function productImageStoragePath(source:string){
   try{const path=new URL(source).pathname,index=path.indexOf(STORAGE_MARKER);return index<0?null:decodeURIComponent(path.slice(index+STORAGE_MARKER.length))}catch{return null}
@@ -24,7 +25,7 @@ export function productImageVariantUrl(source:string,variant:Exclude<ProductImag
   }catch{return source}
 }
 
-export function productImageCandidates(source:string|null|undefined,variant:ProductImageVariant,registry:VariantRegistry=variantRegistry){
+export function productImageCandidates(source:string|null|undefined,variant:ProductImageVariant,registry:VariantRegistry=verifiedVariantRegistry){
   if(!source)return [PRODUCT_IMAGE_PLACEHOLDER];
   const path=productImageStoragePath(source),available=variant!=="original"&&Boolean(path&&registry[path]?.includes(variant));
   const optimized=available?productImageVariantUrl(source,variant):source;

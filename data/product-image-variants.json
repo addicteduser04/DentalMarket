@@ -1,1 +1,16 @@
-{}
+{
+  "catalogue/384ed14bc72df1493be58cb3.webp": ["card"],
+  "catalogue/3a1b9270fb0704c5d58499ba.png": ["card", "detail"],
+  "catalogue/650a04992880e7ab1f8643c2.png": ["card"],
+  "catalogue/994cea438f85ae34caf73e89.jpg": ["card"],
+  "catalogue/a664b0717007681bd968b3d6.png": ["card", "detail"],
+  "products/25b17b18-78c7-4675-9f44-e577473ec537/7fcfd804-c62b-41e0-87bd-b683fbf98ee3-IMG_2235.jpeg": ["card"],
+  "products/2809e68a-9217-4b51-8225-eb6280798dd8/16932029-da61-4923-afe9-b594c6700190-IMG_1556.png": ["card", "detail"],
+  "products/45a6adee-ad13-43f9-95d5-ef0c5b24513d/ca6c7063-2355-4d44-a8dc-25b221f906ad-IMG_2333.jpeg": ["card"],
+  "products/60c930f1-9576-4062-b6f5-a0771d963099/a8853315-6748-477e-8976-01b18aa4641c-IMG_2232.jpeg": ["card", "detail"],
+  "products/96ee9881-b1b5-42c8-a12a-ae0fea5deade/26db7885-1e05-4475-b7d8-749134d0a330-IMG_1503.png": ["card", "detail"],
+  "products/draft/ce97fbef-5328-4240-9563-c273f248892c-IMG_1500.png": ["card", "detail"],
+  "products/draft/ee7a72e2-a111-45c0-b933-fbacf0838e16-IMG_1491.png": ["card", "detail"],
+  "products/e4deda81-f8a5-41a3-b928-a7199dc08201/52911f71-e333-4424-a4ab-0858df44082d-IMG_2207.png": ["card", "detail"],
+  "products/ed4b79fb-3336-4ef2-8467-ab6137e19650/58fa1bc6-3312-4698-a350-b1124bc654d3-IMG_2217.png": ["card", "detail"]
+}
