@@ -8,14 +8,14 @@ export async function getCatalog() {
   const db = createClient();
   const now = new Date().toISOString();
   const [p,c,o,ca] = await Promise.all([
-    db.from("products").select("*, categories(*)").eq("is_active",true).order("created_at",{ascending:false}),
-    db.from("categories").select("*").order("display_order"),
-    db.from("offers").select("*").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`),
-    db.from("campaigns").select("*").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`).order("created_at",{ascending:false}).limit(1)
+    db.from("products").select("id,name,slug,short_summary,description,technical_specs,price,compare_at_price,category_id,images,stock_status,target_audience,variations,is_active,is_featured,sku,brand,price_mode,promotional_price,promotion_starts_at,promotion_ends_at,stock_tracking,stock_quantity,availability_status,publication_status,catalog_visible,created_at,categories(id,name,slug)").eq("is_active",true).eq("publication_status","published").eq("catalog_visible",true).order("created_at",{ascending:false}),
+    db.from("categories").select("id,name,slug,parent_id,display_order").order("display_order"),
+    db.from("offers").select("id,name,badge_text,scope,product_id,category_id,discount_type,discount_value,starts_at,ends_at,is_active,created_at").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`),
+    db.from("campaigns").select("id,name,slug,banner_image_url,banner_link,offer_id,starts_at,ends_at,is_active").eq("is_active",true).lte("starts_at",now).or(`ends_at.is.null,ends_at.gte.${now}`).order("created_at",{ascending:false}).limit(1)
   ]);
   const available = !p.error && !c.error && !o.error && !ca.error;
   return {
-    products:((p.data ?? []) as Product[]).map(sanitizeProductImages),
+    products:((p.data ?? []) as unknown as Product[]).map(sanitizeProductImages),
     categories:(c.data ?? []) as Category[],
     offers:(o.data ?? []) as Offer[],
     campaigns:(ca.data ?? []) as Campaign[],
@@ -23,7 +23,7 @@ export async function getCatalog() {
   };
 }
 
-const homepageProductFields="id,name,slug,price,compare_at_price,category_id,images,stock_status,target_audience,variations,is_active,is_featured,sku,brand,price_mode,promotional_price,promotion_starts_at,promotion_ends_at,stock_tracking,stock_quantity,availability_status,publication_status,created_at";
+const homepageProductFields="id,name,slug,price,compare_at_price,category_id,images,stock_status,target_audience,is_active,is_featured,sku,brand,price_mode,promotional_price,promotion_starts_at,promotion_ends_at,stock_tracking,stock_quantity,availability_status,publication_status,created_at";
 export async function getHomepageData(){
   const empty={products:[] as Product[],categories:[] as Category[],offers:[] as Offer[],campaigns:[] as Campaign[],packs:[] as StudentPack[],universities:[] as University[],recommendations:[] as StudentRecommendation[]};
   if(!hasSupabaseEnv)return {...empty,available:false};
