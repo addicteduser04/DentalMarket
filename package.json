@@ -12,6 +12,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "images:audit": "node scripts/image-audit.mjs",
+    "images:generate": "node scripts/generate-image-variants.mjs",
     "catalogue:dry-run": "node scripts/catalogue-import.mjs",
     "catalogue:import": "node scripts/catalogue-import.mjs --apply",
     "student-packs:dry-run": "node scripts/student-packs-import.mjs",
