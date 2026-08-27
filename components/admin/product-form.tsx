@@ -44,7 +44,7 @@ export function ProductForm({categories,product}:{categories:Category[];product?
     if(!files||!hasSupabaseEnv)return;setMessage("");
     const selected=Array.from(files);const invalid=selected.map(validateProductImage).find(Boolean);
     if(invalid){setMessage(invalid);return}setUploading(true);const db=createClient(),added:ProductImage[]=[];
-    for(const file of selected){const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"-"),path=`products/${product?.id||"draft"}/${crypto.randomUUID()}-${safe}`;const {error}=await db.storage.from("product-images").upload(path,file,{contentType:file.type});if(!error){const url=db.storage.from("product-images").getPublicUrl(path).data.publicUrl;added.push({url,alt:product?.name||"Produit DENTANOVA",is_main:!media.length&&!added.length})}}
+    for(const file of selected){const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"-"),path=`products/${product?.id||"draft"}/${crypto.randomUUID()}-${safe}`;const {error}=await db.storage.from("product-images").upload(path,file,{contentType:file.type,cacheControl:"31536000"});if(!error){const url=db.storage.from("product-images").getPublicUrl(path).data.publicUrl;added.push({url,alt:product?.name||"Produit DENTANOVA",is_main:!media.length&&!added.length})}}
     setMedia(current=>[...current,...added]);setDirty(true);setUploading(false);if(added.length!==selected.length)setMessage("Certaines images n’ont pas pu être envoyées.");
   }
 
