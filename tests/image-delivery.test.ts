@@ -15,4 +15,8 @@ describe("storefront image delivery",()=>{
     expect(readFileSync("components/storefront/student-pack-card.tsx","utf8")).not.toContain("priority");
   });
   it("limits catalogue cards per rendered page",()=>expect(readFileSync("app/search/page.tsx","utf8")).toContain("const PAGE_SIZE=24"));
+  it("does not request unregistered variants and cannot retry beyond the placeholder",()=>{
+    expect(readFileSync("data/product-image-variants.json","utf8").trim()).toBe("{}");
+    expect(image).toContain("Math.min(candidateIndex+1,candidates.length-1)");
+  });
 });

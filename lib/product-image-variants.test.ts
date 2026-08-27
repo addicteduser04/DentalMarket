@@ -9,7 +9,11 @@ describe("product image variants",()=>{
     expect(productImageVariantUrl(original,"detail")).toBe(`${original}.dn-detail.webp`);
   });
   it("falls back from a variant to its original and then the placeholder",()=>{
-    expect(productImageCandidates(original,"card")).toEqual([`${original}.dn-card.webp`,original,PRODUCT_IMAGE_PLACEHOLDER]);
+    expect(productImageCandidates(original,"card",{"catalogue/item.png":["card"]})).toEqual([`${original}.dn-card.webp`,original,PRODUCT_IMAGE_PLACEHOLDER]);
+  });
+  it("prefers the original without a registered variant",()=>{
+    expect(productImageCandidates(original,"card",{})).toEqual([original,PRODUCT_IMAGE_PLACEHOLDER]);
+    expect(productImageCandidates(original,"detail",{"catalogue/item.png":["card"]})).toEqual([original,PRODUCT_IMAGE_PLACEHOLDER]);
   });
   it("does not invent variants for external, local, or missing images",()=>{
     expect(productImageCandidates("https://dentalmarket.ma/a.png","card")).toEqual(["https://dentalmarket.ma/a.png",PRODUCT_IMAGE_PLACEHOLDER]);

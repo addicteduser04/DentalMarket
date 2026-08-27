@@ -35,7 +35,7 @@ export function StudentPackForm({pack,universities,years,products,locale="fr"}:P
   const invalid=validateProductImage(file);if(invalid){setMessage(invalid);return}
   setUploading(true);const db=createClient(),safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"-");
   const path=`student-packs/${pack?.id||"draft"}/${crypto.randomUUID()}-${safe}`;
-  const {error}=await db.storage.from("product-images").upload(path,file,{contentType:file.type,cacheControl:"31536000"});
+  const {error}=await db.storage.from("product-images").upload(path,file,{contentType:file.type});
   if(error)setMessage("Impossible d’envoyer l’image. Réessayez ou vérifiez le format du fichier.");
   else {setImageUrl(db.storage.from("product-images").getPublicUrl(path).data.publicUrl);setDirty(true)}
   setUploading(false);

@@ -181,7 +181,7 @@ async function importImages(client, payload) {
       throw new Error(`Invalid catalogue image: ${url}`);
     const extension = {"image/jpeg":"jpg","image/png":"png","image/webp":"webp"}[type];
     const path = `catalogue/${createHash("sha256").update(url).digest("hex").slice(0, 24)}.${extension}`;
-    const upload = await client.storage.from("product-images").upload(path, bytes, { contentType: type, cacheControl:"31536000", upsert: false });
+    const upload = await client.storage.from("product-images").upload(path, bytes, { contentType: type, upsert: false });
     if (upload.error && !/already exists/i.test(upload.error.message)) throw upload.error;
     const publicUrl = client.storage.from("product-images").getPublicUrl(path).data.publicUrl;
     cache.set(url, publicUrl);
