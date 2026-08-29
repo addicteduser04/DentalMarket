@@ -1,16 +1,16 @@
 import {Search} from "lucide-react";
 import Link from "next/link";
 import {ProductCard} from "@/components/storefront/product-card";
-import {getCatalog} from "@/lib/data";
+import {getCatalogListing} from "@/lib/data";
 import {EmptyState} from "@/components/ui/empty-state";
 import {getLocale} from "@/lib/i18n-server";
 
 const PAGE_SIZE=24;
 export default async function SearchPage({searchParams}:{searchParams:Promise<{q?:string;page?:string}>}){
   const filters=await searchParams,query=(filters.q||"").trim().toLowerCase();
-  const {products,categories,offers}=await getCatalog(),locale=await getLocale();
+  const {products,categories,offers}=await getCatalogListing(),locale=await getLocale();
   const foundCategories=query?categories.filter(category=>category.name.toLowerCase().includes(query)):[];
-  const found=query?products.filter(product=>product.name.toLowerCase().includes(query)||product.description?.toLowerCase().includes(query)||product.categories?.name.toLowerCase().includes(query)):products;
+  const found=query?products.filter(product=>product.name.toLowerCase().includes(query)||product.short_summary?.toLowerCase().includes(query)||product.categories?.name.toLowerCase().includes(query)):products;
   const requestedPage=Math.max(1,Number.parseInt(filters.page||"1",10)||1),pageCount=Math.max(1,Math.ceil(found.length/PAGE_SIZE)),page=Math.min(requestedPage,pageCount),visible=found.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE);
   const pageHref=(target:number)=>`/search?q=${encodeURIComponent(filters.q||"")}&page=${target}`;
   return <div className="store-page"><div className="container-shell py-14"><p className="eyebrow">Catalogue complet</p><h1 className="display mt-3 text-5xl">Que recherchez-vous ?</h1>

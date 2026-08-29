@@ -46,6 +46,10 @@ export function assertProductionSafety(options,hasSelector){
   if(options.apply&&options.limit&&options.limit>MAX_PRODUCTION_BATCH)throw new Error(`Production --limit cannot exceed ${MAX_PRODUCTION_BATCH}`);
 }
 
+export function assertSelectedProductionBatch(options,count){
+  if(options.apply&&count>MAX_PRODUCTION_BATCH)throw new Error(`Production selection cannot exceed ${MAX_PRODUCTION_BATCH} source objects; split the manifest into smaller batches`);
+}
+
 async function readSelectionManifest(file){
   if(!file)return [];
   const parsed=JSON.parse(await readFile(resolve(file),"utf8")),items=Array.isArray(parsed)?parsed:parsed.paths;
@@ -120,6 +124,7 @@ async function productionMode(options){
   let selected=[...referenced.values()].sort((a,b)=>a.path.localeCompare(b.path));
   if(explicit.length){const wanted=new Set(explicit);selected=selected.filter(item=>wanted.has(item.path));const unknown=explicit.filter(path=>!referenced.has(path));if(unknown.length)throw new Error(`Selection contains ${unknown.length} unreferenced path(s): ${unknown.join(", ")}`)}
   if(options.limit)selected=selected.slice(0,options.limit);
+  assertSelectedProductionBatch(options,selected.length);
   if(!options.apply&&!options.inspect){console.log(JSON.stringify({mode:"dry-run",sourceObjectsConsidered:selected.length,variantsPlanned:selected.length*2,selectionRequiredForApply:true,maxProductionBatch:MAX_PRODUCTION_BATCH,naming:"<original-path>.dn-{card|detail}.webp",cacheControl:CACHE_CONTROL,paths:selected},null,2));return}
   const report=[],mode=options.apply?"apply":"inspect",outputDir=options.outputDir?resolve(options.outputDir):null;
   if(outputDir)await mkdir(outputDir,{recursive:true});

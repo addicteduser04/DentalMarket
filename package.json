@@ -19,7 +19,9 @@
     "student-packs:dry-run": "node scripts/student-packs-import.mjs",
     "student-packs:import": "node scripts/student-packs-import.mjs --apply",
     "student-recommendations:dry-run": "node scripts/student-recommendations-import.mjs",
-    "student-recommendations:import": "node scripts/student-recommendations-import.mjs --apply"
+    "student-recommendations:import": "node scripts/student-recommendations-import.mjs --apply",
+    "images:plan-heavy": "node scripts/plan-heavy-image-variants.mjs",
+    "images:verify": "node scripts/verify-image-variants.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.1",

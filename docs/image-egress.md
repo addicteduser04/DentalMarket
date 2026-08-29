@@ -35,3 +35,28 @@ The storefront only requests variants listed in `data/product-image-variants.jso
 8. Re-run the audit and monitor Supabase Storage egress/cache hit behavior.
 
 Do not broaden product RLS or pack visibility policies. Variant paths are derived only from already-authorized public image URLs and are independent of catalogue visibility.
+
+## Heavy-original Batch 2 workflow
+
+The first rollout deliberately covered only a small verified subset. Production telemetry later confirmed that lazy loading works and typical visible-card originals are often small, so the next pass should target the remaining high-impact originals rather than generate variants for every object.
+
+`npm run images:plan-heavy -- --output-dir .image-egress/batch2` is metadata-only. It reads published product/pack references plus Storage object metadata, excludes sources whose required card/detail variants are already registered, and prioritizes referenced originals of at least 150 KB by source bytes. It writes bounded manifests of at most 40 sources by default; use `--batch-size` up to 50, `--min-bytes`, or `--limit` when needed. No image bodies are downloaded and no Storage object is modified.
+
+For each generated manifest:
+
+1. Inspect locally without uploading:
+   `node --env-file=.env.local scripts/generate-image-variants.mjs --manifest .image-egress/batch2/heavy-batch-01.json --inspect --output-dir .image-egress/batch2/inspect-01`
+2. Review `variant-report.json` and several generated images.
+3. Upload the exact bounded batch only after review:
+   `node --env-file=.env.local scripts/generate-image-variants.mjs --manifest .image-egress/batch2/heavy-batch-01.json --apply --confirm-production --output-dir .image-egress/batch2/apply-01`
+4. Verify uploaded object metadata and merge only verified variants into the checked-in registry:
+   `node --env-file=.env.local scripts/verify-image-variants.mjs --candidate-registry .image-egress/batch2/apply-01/variant-registry.json --update-registry`
+5. Run tests/build, commit the registry/code, deploy, and perform a cache-disabled production smoke test.
+
+Production apply now rejects any manifest resolving to more than 50 source originals, so a large manifest cannot bypass the batch cap.
+
+The planner intentionally ignores product/pack gallery images that are not currently rendered on ordinary storefront surfaces. Product main images and pack hero images request both card/detail coverage; variation images request card coverage. Existing originals remain fallback assets and are never overwritten.
+
+## Database/API egress shaping
+
+Storefront listing pages now use a lightweight catalogue query that excludes large detail-only fields such as product technical specifications and variation payloads. Product detail pages query the requested slug directly instead of downloading the entire public catalogue and then filtering in application memory. This reduces Supabase database egress independently of the Storage image work while preserving full detail data on the product page.

@@ -1,14 +1,17 @@
 import {describe,expect,it} from "vitest";
 import {randomBytes} from "node:crypto";
 import sharp from "sharp";
-import {assertProductionSafety,createVariants,parseArgs,variantEligibility,variantPath} from "./generate-image-variants.mjs";
+import {assertProductionSafety,assertSelectedProductionBatch,createVariants,parseArgs,variantEligibility,variantPath} from "./generate-image-variants.mjs";
 
 describe("image variant generation",()=>{
   it("uses deterministic, non-destructive paths",()=>expect(variantPath("catalogue/item.png","card")).toBe("catalogue/item.png.dn-card.webp"));
   it("requires confirmed, explicitly selected, bounded production batches",()=>{
     expect(()=>assertProductionSafety(parseArgs(["--apply"]),false)).toThrow(/explicit/);
     expect(()=>assertProductionSafety(parseArgs(["--apply","--confirm-production","--limit","51"]),true)).toThrow(/cannot exceed 50/);
-    expect(()=>assertProductionSafety(parseArgs(["--apply","--confirm-production","--limit","20"]),true)).not.toThrow();
+    const apply=parseArgs(["--apply","--confirm-production","--manifest","batch.json"]);
+    expect(()=>assertProductionSafety(apply,true)).not.toThrow();
+    expect(()=>assertSelectedProductionBatch(apply,51)).toThrow(/cannot exceed 50/);
+    expect(()=>assertSelectedProductionBatch(apply,50)).not.toThrow();
   });
   it("skips already-small efficient images",async()=>{
     const input=await sharp({create:{width:320,height:160,channels:3,background:"#ffffff"}}).png().toBuffer();
