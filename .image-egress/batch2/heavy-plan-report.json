@@ -1,0 +1,301 @@
+{
+  "mode": "metadata-only-heavy-plan",
+  "generatedAt": "2026-08-29T22:08:16.257Z",
+  "minBytes": 150000,
+  "batchSize": 40,
+  "candidateCount": 14,
+  "totalCandidateBytes": 11330169,
+  "candidates": [
+    {
+      "path": "student-packs/b9634df7-b6fe-4a2a-8f88-2b8851ca1311/d998be8e-7868-400b-8e0a-e0439f1482ba-IMG_2288.png",
+      "sourceBytes": 2727533,
+      "referenceCount": 1,
+      "usages": [
+        "pack-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "pack",
+          "id": "b9634df7-b6fe-4a2a-8f88-2b8851ca1311",
+          "name": "Pack 3 eme année UM6SS Casablanca "
+        }
+      ]
+    },
+    {
+      "path": "student-packs/41eb465e-812b-476f-a4d1-c23d6528a269/fbb1110f-985e-4745-917d-bd57f8696042-IMG_2291.png",
+      "sourceBytes": 2584030,
+      "referenceCount": 1,
+      "usages": [
+        "pack-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "pack",
+          "id": "db1f78ba-0fd3-4818-91ab-76668879b99c",
+          "name": "Pack 2ème Année UM6SS-Casablanca2026"
+        }
+      ]
+    },
+    {
+      "path": "student-packs/b390043c-1b84-4425-86db-b1fb2ad735fb/4d96dffe-9e57-4daf-82d6-717860a42027-IMG_1882.png",
+      "sourceBytes": 2435440,
+      "referenceCount": 1,
+      "usages": [
+        "pack-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "pack",
+          "id": "b390043c-1b84-4425-86db-b1fb2ad735fb",
+          "name": "Pack clinique"
+        }
+      ]
+    },
+    {
+      "path": "products/draft/ab72e987-066e-4c4d-9f27-7416de908fa9-IMG_1494.png",
+      "sourceBytes": 476189,
+      "referenceCount": 1,
+      "usages": [
+        "product-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "1f38166f-f2ca-4463-adfc-1f79d5c98db2",
+          "name": "Composite A2",
+          "catalogVisible": true
+        }
+      ]
+    },
+    {
+      "path": "products/draft/f8f3b44e-334b-44d6-ad56-81394a5132a6-IMG_1496.png",
+      "sourceBytes": 473578,
+      "referenceCount": 1,
+      "usages": [
+        "product-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "217fdabe-7931-429e-be1f-423b80e4eac7",
+          "name": "Composite A3 DENU",
+          "catalogVisible": true
+        }
+      ]
+    },
+    {
+      "path": "products/draft/8a024d55-28df-4406-bebe-3c4f8e68d9f3-IMG_1707.png",
+      "sourceBytes": 463027,
+      "referenceCount": 1,
+      "usages": [
+        "product-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "bedd8e56-52fa-4638-b1f1-e385f5b8af7f",
+          "name": "Mallette noir",
+          "catalogVisible": true
+        }
+      ]
+    },
+    {
+      "path": "products/6b5fa5b1-a644-41ee-b13c-63854b0370f1/20c7bace-f4f8-4237-af63-501c0ccb9b5f-IMG_2167.jpeg",
+      "sourceBytes": 414280,
+      "referenceCount": 1,
+      "usages": [
+        "product-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "6b5fa5b1-a644-41ee-b13c-63854b0370f1",
+          "name": "PK-Thomas (PKT)",
+          "catalogVisible": true
+        }
+      ]
+    },
+    {
+      "path": "products/draft/545c8336-9bc0-44de-90e8-010f17a032e3-IMG_1498.png",
+      "sourceBytes": 379074,
+      "referenceCount": 1,
+      "usages": [
+        "product-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "2017ba85-7091-4889-807d-1f2d6b944144",
+          "name": "Grant noir sans latex (pouder free)",
+          "catalogVisible": true
+        }
+      ]
+    },
+    {
+      "path": "products/8a4877cb-0027-4514-8166-197008c7a127/9c804c18-b472-4180-829e-832414dbc0d9-IMG_2187.jpeg",
+      "sourceBytes": 314055,
+      "referenceCount": 1,
+      "usages": [
+        "product-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "8a4877cb-0027-4514-8166-197008c7a127",
+          "name": "Disque à Tronçonner",
+          "catalogVisible": true
+        }
+      ]
+    },
+    {
+      "path": "products/draft/3fe569bc-d817-4812-9cbe-beb020436ccb-IMG_1449.jpeg",
+      "sourceBytes": 290669,
+      "referenceCount": 1,
+      "usages": [
+        "product-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "5775de37-e1cc-43e4-bafb-e17b152f8e28",
+          "name": "Composite kit-DENU",
+          "catalogVisible": true
+        }
+      ]
+    },
+    {
+      "path": "products/bed84491-ab75-45f4-bee8-f6b079a177de/a539b539-dbc6-42ce-8210-34fec092d46c-IMG_2225.jpeg",
+      "sourceBytes": 227884,
+      "referenceCount": 1,
+      "usages": [
+        "product-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "bed84491-ab75-45f4-bee8-f6b079a177de",
+          "name": "Cupule pour contre angle",
+          "catalogVisible": true
+        }
+      ]
+    },
+    {
+      "path": "catalogue/a2ba464314a9a0ee5a5b48f6.png",
+      "sourceBytes": 206640,
+      "referenceCount": 2,
+      "usages": [
+        "product-main",
+        "variation"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "e73b7daa-3fe3-4c43-8c09-d9dae292fc12",
+          "name": "Couteau à Plâtre/Cire",
+          "catalogVisible": true
+        },
+        {
+          "type": "variation",
+          "productId": "e73b7daa-3fe3-4c43-8c09-d9dae292fc12",
+          "name": "Couteau à Plâtre/Cire"
+        }
+      ]
+    },
+    {
+      "path": "products/draft/1df42834-c213-43d6-a0e1-c51bbe2ce487-IMG_2329.png",
+      "sourceBytes": 180708,
+      "referenceCount": 1,
+      "usages": [
+        "product-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "da3f520e-2efb-4c3d-bff8-2f69b188f9f3",
+          "name": "Cellophane adapté",
+          "catalogVisible": true
+        }
+      ]
+    },
+    {
+      "path": "catalogue/089886fa8915b783de810493.png",
+      "sourceBytes": 157062,
+      "referenceCount": 1,
+      "usages": [
+        "product-main"
+      ],
+      "missingVariants": [
+        "card",
+        "detail"
+      ],
+      "owners": [
+        {
+          "type": "product",
+          "id": "e2419d54-41f1-44a2-a964-d9cf77a5ab83",
+          "name": "Paire de Bas en Nylon",
+          "catalogVisible": true
+        }
+      ]
+    }
+  ],
+  "batches": [
+    {
+      "number": 1,
+      "objects": 14,
+      "bytes": 11330169,
+      "manifest": "heavy-batch-01.json"
+    }
+  ]
+}
