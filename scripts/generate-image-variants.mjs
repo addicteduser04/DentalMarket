@@ -138,9 +138,13 @@ async function productionMode(options){
   await finishReport({mode,considered:selected.length,report,outputDir});
 }
 
+export function isLocalDirectoryMode(options){
+  return Boolean(options.inputDir||(!options.inspect&&!options.apply&&options.outputDir));
+}
+
 async function main(){
   const options=parseArgs(process.argv.slice(2));
-  if(options.inputDir||(!options.inspect&&options.outputDir)){if(!options.inputDir||!options.outputDir)throw new Error("Local directory mode requires --input-dir and --output-dir");await localDirectoryMode(resolve(options.inputDir),resolve(options.outputDir));return}
+  if(isLocalDirectoryMode(options)){if(!options.inputDir||!options.outputDir)throw new Error("Local directory mode requires --input-dir and --output-dir");await localDirectoryMode(resolve(options.inputDir),resolve(options.outputDir));return}
   await productionMode(options);
 }
 if(import.meta.url===`file://${process.argv[1]}`)main().catch(error=>{console.error(error.message);process.exitCode=1});

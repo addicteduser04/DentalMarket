@@ -13,7 +13,7 @@ export function CampaignForm({offers,campaigns,campaign}:{offers:Offer[];campaig
     e.preventDefault();setMsg("");
     if(!hasSupabaseEnv){setMsg("Connectez Supabase pour enregistrer.");return}
     const f=new FormData(e.currentTarget),file=f.get("banner") as File;let bannerImageUrl=String(f.get("banner_image_url")??"")||null;
-    if(file?.size){const db=createClient(),path=`campaigns/${crypto.randomUUID()}-${file.name}`,{error}=await db.storage.from("product-images").upload(path,file,{contentType:file.type});if(error){setMsg("Impossible de téléverser la bannière.");return}bannerImageUrl=db.storage.from("product-images").getPublicUrl(path).data.publicUrl}
+    if(file?.size){const db=createClient(),path=`campaigns/${crypto.randomUUID()}-${file.name}`,{error}=await db.storage.from("product-images").upload(path,file,{contentType:file.type,cacheControl:"31536000"});if(error){setMsg("Impossible de téléverser la bannière.");return}bannerImageUrl=db.storage.from("product-images").getPublicUrl(path).data.publicUrl}
     const result=validateCampaignDraft({name:String(f.get("name")??""),slug:String(f.get("slug")??""),banner_image_url:bannerImageUrl,banner_link:String(f.get("banner_link")??"")||null,offer_id:String(f.get("offer_id")??"")||null,starts_at:String(f.get("starts_at")??""),ends_at:String(f.get("ends_at")??"")||null,is_active:f.has("is_active")},campaigns,offers,campaign?.id);
     setErrors(result.errors);if(!result.valid)return;
     const query=createClient().from("campaigns"),{error}=campaign?await query.update(result.data).eq("id",campaign.id):await query.insert(result.data);

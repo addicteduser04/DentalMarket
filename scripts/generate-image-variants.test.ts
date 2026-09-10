@@ -1,10 +1,16 @@
 import {describe,expect,it} from "vitest";
 import {randomBytes} from "node:crypto";
 import sharp from "sharp";
-import {assertProductionSafety,assertSelectedProductionBatch,createVariants,parseArgs,variantEligibility,variantPath} from "./generate-image-variants.mjs";
+import {assertProductionSafety,assertSelectedProductionBatch,createVariants,isLocalDirectoryMode,parseArgs,variantEligibility,variantPath} from "./generate-image-variants.mjs";
 
 describe("image variant generation",()=>{
   it("uses deterministic, non-destructive paths",()=>expect(variantPath("catalogue/item.png","card")).toBe("catalogue/item.png.dn-card.webp"));
+  it("routes --apply and --inspect with --output-dir to production mode, not local directory mode",()=>{
+    expect(isLocalDirectoryMode(parseArgs(["--apply","--confirm-production","--manifest","batch.json","--output-dir","out"]))).toBe(false);
+    expect(isLocalDirectoryMode(parseArgs(["--inspect","--manifest","batch.json","--output-dir","out"]))).toBe(false);
+    expect(isLocalDirectoryMode(parseArgs(["--input-dir","in","--output-dir","out"]))).toBe(true);
+    expect(isLocalDirectoryMode(parseArgs(["--output-dir","out"]))).toBe(true);
+  });
   it("requires confirmed, explicitly selected, bounded production batches",()=>{
     expect(()=>assertProductionSafety(parseArgs(["--apply"]),false)).toThrow(/explicit/);
     expect(()=>assertProductionSafety(parseArgs(["--apply","--confirm-production","--limit","51"]),true)).toThrow(/cannot exceed 50/);
