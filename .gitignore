@@ -1,16 +1,55 @@
+# Dependencies & build output
 node_modules
 .next
+out
+build
+coverage
+*.tsbuildinfo
+
+# Environment & secrets — never commit real credentials
 .env
 .env.*
 !.env.example
-coverage
-*.log
-*.tsbuildinfo
-.DS_Store
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+secrets/
+credentials*.json
+service-account*.json
+
+# Platform / tool local state (contains project IDs and links)
 .vercel
 supabase/.temp/
+supabase/.branches/
+.openai/
+.claude/settings.local.json
+
+# Local data dumps, backups & generated reports (may contain production data)
 .catalogue-import/
+.image-egress/
 tmp/
+*.backup.json
+*-backup-*.json
+*.dump
+*.sql.gz
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+
 # One-off student-pack forensic helpers. Keep the maintained audit script.
 /scripts/check-import-runs.mjs
 /scripts/fetch-relations-by-id.mjs
